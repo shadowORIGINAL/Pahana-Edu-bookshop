@@ -10,7 +10,8 @@ import java.io.IOException;
 
 public class LoginServlet extends HttpServlet {
     private final UserService userService = new UserService();
-
+  
+    
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String email = request.getParameter("email");
