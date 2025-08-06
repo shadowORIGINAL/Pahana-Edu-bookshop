@@ -1,6 +1,9 @@
 F:\Final AP\bookshop-online\src\main\java\com\pahanaedu\config\DBConnection.java
 F:\Final AP\bookshop-online\src\main\java\com\pahanaedu\controller\LoginServlet.java
+F:\Final AP\bookshop-online\src\main\java\com\pahanaedu\controller\RegisterServlet.java
 F:\Final AP\bookshop-online\src\main\java\com\pahanaedu\dao\UserDAO.java
 F:\Final AP\bookshop-online\src\main\java\com\pahanaedu\model\PasswordResetToken.java
+F:\Final AP\bookshop-online\src\main\java\com\pahanaedu\model\Product.java
 F:\Final AP\bookshop-online\src\main\java\com\pahanaedu\model\User.java
+F:\Final AP\bookshop-online\src\main\java\com\pahanaedu\service\EmailService.java
 F:\Final AP\bookshop-online\src\main\java\com\pahanaedu\service\UserService.java

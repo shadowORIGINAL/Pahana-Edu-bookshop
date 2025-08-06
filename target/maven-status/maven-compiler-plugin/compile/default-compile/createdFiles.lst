@@ -1,6 +1,10 @@
 com\pahanaedu\controller\LoginServlet.class
+com\pahanaedu\service\EmailService.class
+com\pahanaedu\model\PasswordResetToken.class
+com\pahanaedu\controller\RegisterServlet.class
+com\pahanaedu\model\Product.class
 com\pahanaedu\service\UserService.class
 com\pahanaedu\model\User.class
-com\pahanaedu\model\PasswordResetToken.class
+com\pahanaedu\service\EmailService$1.class
 com\pahanaedu\config\DBConnection.class
 com\pahanaedu\dao\UserDAO.class
