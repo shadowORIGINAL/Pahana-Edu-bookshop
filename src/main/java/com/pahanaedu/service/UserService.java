@@ -27,6 +27,7 @@ public class UserService {
     public void registerUser(User user) throws Exception {
         userDAO.saveUser(user);
     }
+    
     public List<User> getAllStaff() throws Exception {
         return userDAO.getAllUsersByRole("STAFF");
     }
@@ -42,6 +43,7 @@ public class UserService {
     public void updateUser(User user) throws Exception {
         userDAO.updateUser(user);
     }
+    
     public void updatePassword(Long id, String newPassword) throws Exception {
         // Validate input
         if (id == null || newPassword == null || newPassword.isEmpty()) {
