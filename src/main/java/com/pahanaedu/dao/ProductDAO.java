@@ -1,4 +1,3 @@
-// ProductDAO.java
 package com.pahanaedu.dao;
 
 import com.pahanaedu.config.DBConnection;
@@ -12,6 +11,49 @@ import java.util.logging.Logger;
 
 public class ProductDAO {
     private static final Logger logger = Logger.getLogger(ProductDAO.class.getName());
+
+    public boolean productExists(String title, String author) throws Exception {
+        String sql = "SELECT COUNT(*) FROM products WHERE title = ? AND author = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, title);
+            ps.setString(2, author);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error checking for existing product", e);
+            throw new Exception("Database error while checking for existing product");
+        }
+        return false;
+    }
+
+    public boolean productExistsExcludingId(String title, String author, long excludeId) throws Exception {
+        String sql = "SELECT COUNT(*) FROM products WHERE title = ? AND author = ? AND product_id != ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, title);
+            ps.setString(2, author);
+            ps.setLong(3, excludeId);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error checking for existing product", e);
+            throw new Exception("Database error while checking for existing product");
+        }
+        return false;
+    }
 
     public void saveProduct(Product product) throws Exception {
         String sql = "INSERT INTO products (title, description, author, publisher, publication_date, " +
