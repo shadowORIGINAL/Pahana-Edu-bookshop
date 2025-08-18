@@ -10,8 +10,9 @@ import javax.servlet.http.*;
 import java.io.IOException;
 
 public class RegisterServlet extends HttpServlet {
-    private final UserService userService = new UserService();
-    private final EmailService emailService = new EmailService();
+    private final UserService userService = UserService.getInstance();
+    private final EmailService emailService = EmailService.getInstance();
+
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

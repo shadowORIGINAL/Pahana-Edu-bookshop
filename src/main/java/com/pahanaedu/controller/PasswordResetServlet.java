@@ -36,7 +36,8 @@ public class PasswordResetServlet extends HttpServlet {
             userDAO.storePasswordResetToken(user.getId(), token, expiryDate);
             
             // 4. Send email
-            EmailService emailService = new EmailService();
+            EmailService emailService = EmailService.getInstance();
+
             String resetLink = request.getRequestURL().toString()
                 .replace("password-reset", "reset-password.jsp") 
                 + "?token=" + token;

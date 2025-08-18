@@ -21,8 +21,8 @@ import javax.servlet.http.Part;
     maxRequestSize = 1024 * 1024 * 100   // 100 MB
 )
 public class ManageProductsServlet extends HttpServlet {
-    private final ProductService productService = new ProductService();
-    private static final String UPLOAD_DIR = "images";
+    private final ProductService productService = ProductService.getInstance();
+    private static final String UPLOAD_DIR = "images";  // Changed from "images/products"
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -80,18 +80,6 @@ public class ManageProductsServlet extends HttpServlet {
 
     private void handleAddProduct(HttpServletRequest request, HttpServletResponse response)
             throws Exception, IOException, ServletException {
-        // First check if product already exists
-        String title = request.getParameter("title");
-        String author = request.getParameter("author");
-        
-        if (productService.productExists(title, author)) {
-            request.setAttribute("error", "A product with this title and author already exists.");
-            List<Product> productList = productService.getAllProducts(false);
-            request.setAttribute("productList", productList);
-            request.getRequestDispatcher("manage_products.jsp").forward(request, response);
-            return;
-        }
-
         // Get application path
         String appPath = request.getServletContext().getRealPath("");
         String uploadPath = appPath + File.separator + UPLOAD_DIR;
@@ -111,14 +99,14 @@ public class ManageProductsServlet extends HttpServlet {
         if (filePart != null && filePart.getSize() > 0) {
             filePart.write(filePath);
         } else {
-            relativeImagePath = null;
+            relativeImagePath = null; // No image uploaded
         }
 
         // Create and save product
         Product product = new Product();
-        product.setTitle(title);
+        product.setTitle(request.getParameter("title"));
         product.setDescription(request.getParameter("description"));
-        product.setAuthor(author);
+        product.setAuthor(request.getParameter("author"));
         product.setPublisher(request.getParameter("publisher"));
         String pubDateStr = request.getParameter("publication_date");
         product.setPublicationDate(pubDateStr != null && !pubDateStr.isEmpty() ? 
@@ -139,24 +127,12 @@ public class ManageProductsServlet extends HttpServlet {
     private void handleUpdateProduct(HttpServletRequest request, HttpServletResponse response)
             throws Exception, IOException, ServletException {
         long id = Long.parseLong(request.getParameter("id"));
-        String title = request.getParameter("title");
-        String author = request.getParameter("author");
-        
-        // Check if another product with same title and author exists (excluding current product)
-        if (productService.productExistsExcludingId(title, author, id)) {
-            request.setAttribute("error", "Another product with this title and author already exists.");
-            List<Product> productList = productService.getAllProducts(false);
-            request.setAttribute("productList", productList);
-            request.getRequestDispatcher("manage_products.jsp").forward(request, response);
-            return;
-        }
-
         Product product = productService.getProductById(id);
         
         // Update basic fields
-        product.setTitle(title);
+        product.setTitle(request.getParameter("title"));
         product.setDescription(request.getParameter("description"));
-        product.setAuthor(author);
+        product.setAuthor(request.getParameter("author"));
         product.setPublisher(request.getParameter("publisher"));
         String pubDateStr = request.getParameter("publication_date");
         product.setPublicationDate(pubDateStr != null && !pubDateStr.isEmpty() ? 
@@ -172,14 +148,17 @@ public class ManageProductsServlet extends HttpServlet {
         // Handle image update if a new image was uploaded
         Part filePart = request.getPart("image");
         if (filePart != null && filePart.getSize() > 0) {
+            // Get application path
             String appPath = request.getServletContext().getRealPath("");
             String uploadPath = appPath + File.separator + UPLOAD_DIR;
             
+            // Create upload directory if it doesn't exist
             File uploadDir = new File(uploadPath);
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
 
+            // Process new image upload
             String fileName = System.currentTimeMillis() + "_" + getFileName(filePart);
             String filePath = uploadPath + File.separator + fileName;
             String relativeImagePath = UPLOAD_DIR + File.separator + fileName;

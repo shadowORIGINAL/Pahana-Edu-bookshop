@@ -5,9 +5,23 @@ import javax.mail.*;
 import javax.mail.internet.*;
 
 public class EmailService {
-    // For testing, use direct credentials (remove before production)
+    // Singleton instance
+    private static EmailService instance;
+
+    // Gmail credentials (⚠️ best to load from env variables or config, not hardcode!)
     private final String username = "wickramasinghakalana3@gmail.com";
-    private final String password = "cnyn tbml btvn bjdd".replace(" ", ""); // Remove spaces from app password
+    private final String password = "cnyn tbml btvn bjdd".replace(" ", "");
+
+    // Private constructor prevents instantiation
+    private EmailService() {}
+
+    // Thread-safe global access point
+    public static synchronized EmailService getInstance() {
+        if (instance == null) {
+            instance = new EmailService();
+        }
+        return instance;
+    }
 
     public void sendEmail(String to, String subject, String content) throws Exception {
         Properties props = new Properties();
@@ -31,10 +45,9 @@ public class EmailService {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
             message.setSubject(subject);
             message.setContent(content, "text/html; charset=utf-8");
-            
-            // Add debugging
-            session.setDebug(true);
-            
+
+            session.setDebug(true); // Debugging (disable in production)
+
             Transport.send(message);
             System.out.println("Email sent successfully to: " + to);
         } catch (MessagingException e) {

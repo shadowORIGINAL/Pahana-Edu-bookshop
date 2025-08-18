@@ -11,8 +11,8 @@ import java.util.*;
 
 
 public class CheckoutServlet extends HttpServlet {
-    private final OrderService orderService = new OrderService();
-    private final ProductService productService = new ProductService();
+    private final OrderService orderService = OrderService.getInstance();
+    private final ProductService productService = ProductService.getInstance();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);

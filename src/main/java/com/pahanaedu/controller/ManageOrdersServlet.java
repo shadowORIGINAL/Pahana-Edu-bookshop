@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.util.*;
 
 public class ManageOrdersServlet extends HttpServlet {
-    private final OrderService orderService = new OrderService();
-    private final UserService userService = new UserService();
-    private final ProductService productService = new ProductService();
+	private final OrderService orderService = OrderService.getInstance();
+    private final UserService userService = UserService.getInstance();
+    private final ProductService productService = ProductService.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

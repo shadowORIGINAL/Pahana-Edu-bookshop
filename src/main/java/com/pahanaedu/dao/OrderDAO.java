@@ -18,7 +18,8 @@ public class OrderDAO {
         String sql = "INSERT INTO orders (customer_id, total_amount, status, bill_number, created_by) " +
                      "VALUES (?, ?, ?, ?, ?)";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
             ps.setLong(1, order.getCustomerId());
@@ -51,7 +52,8 @@ public class OrderDAO {
         String sql = "INSERT INTO order_items (order_id, product_id, quantity, unit_price, discount_percentage) " +
                      "VALUES (?, ?, ?, ?, ?)";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setLong(1, item.getOrderId());
@@ -78,7 +80,8 @@ public class OrderDAO {
 
         String sql = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE product_id = ?";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setInt(1, quantity);
@@ -98,7 +101,8 @@ public class OrderDAO {
     public String generateBillNumber() throws Exception {
         String sql = "SELECT COUNT(*) FROM orders WHERE bill_number LIKE ?";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setString(1, BILL_NUMBER_PREFIX + "%");
@@ -125,7 +129,8 @@ public class OrderDAO {
         
         List<Order> orders = new ArrayList<>();
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             
@@ -152,7 +157,8 @@ public class OrderDAO {
                      "JOIN users cu ON o.created_by = cu.id " +
                      "WHERE o.order_id = ?";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setLong(1, id);
@@ -184,7 +190,8 @@ public class OrderDAO {
         
         List<OrderItem> items = new ArrayList<>();
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setLong(1, orderId);

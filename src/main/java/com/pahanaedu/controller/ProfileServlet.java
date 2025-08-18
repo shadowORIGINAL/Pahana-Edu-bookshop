@@ -11,7 +11,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.io.IOException;
 
 public class ProfileServlet extends HttpServlet {
-    private final UserService userService = new UserService();
+    private final UserService userService =UserService.getInstance();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

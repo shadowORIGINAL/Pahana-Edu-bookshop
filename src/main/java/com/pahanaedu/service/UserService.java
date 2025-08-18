@@ -1,16 +1,34 @@
 package com.pahanaedu.service;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.mindrot.jbcrypt.BCrypt;
 
 import com.pahanaedu.dao.UserDAO;
 import com.pahanaedu.model.User;
-import java.util.logging.Logger;
 
 public class UserService {
+
+    // 1. Singleton instance
+    private static UserService instance;
+
+    // 2. Private constructor prevents external instantiation
+    private UserService() {}
+
+    // 3. Public method to provide access to the instance (thread-safe)
+    public static synchronized UserService getInstance() {
+        if (instance == null) {
+            instance = new UserService();
+        }
+        return instance;
+    }
+
+    // DAO dependency
     private final UserDAO userDAO = new UserDAO();
     private static final Logger logger = Logger.getLogger(UserService.class.getName());
+
+    // Authentication
     public User authenticate(String email, String password) throws Exception {
         User user = userDAO.getUserByEmail(email);
         if (user == null) {
@@ -24,10 +42,11 @@ public class UserService {
         return null;
     }
 
+    // User management
     public void registerUser(User user) throws Exception {
         userDAO.saveUser(user);
     }
-    
+
     public List<User> getAllStaff() throws Exception {
         return userDAO.getAllUsersByRole("STAFF");
     }
@@ -43,13 +62,11 @@ public class UserService {
     public void updateUser(User user) throws Exception {
         userDAO.updateUser(user);
     }
-    
+
     public void updatePassword(Long id, String newPassword) throws Exception {
-        // Validate input
         if (id == null || newPassword == null || newPassword.isEmpty()) {
             throw new Exception("User ID or new password cannot be null or empty");
         }
-        // Pass the newPassword directly to DAO (assuming it's already hashed in the servlet)
         userDAO.updateUserPassword(id, newPassword);
     }
 

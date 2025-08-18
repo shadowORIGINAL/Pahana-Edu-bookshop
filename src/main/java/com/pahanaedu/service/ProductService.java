@@ -1,3 +1,4 @@
+// ProductService.java
 package com.pahanaedu.service;
 
 import com.pahanaedu.dao.ProductDAO;
@@ -5,16 +6,25 @@ import com.pahanaedu.model.Product;
 import java.util.List;
 
 public class ProductService {
+
+    // 1. Single instance
+    private static ProductService instance;
+
+    // 2. Private constructor prevents external instantiation
+    private ProductService() {}
+
+    // 3. Public method to provide access to the instance (thread-safe)
+    public static synchronized ProductService getInstance() {
+        if (instance == null) {
+            instance = new ProductService();
+        }
+        return instance;
+    }
+
+    // DAO dependency
     private final ProductDAO productDAO = new ProductDAO();
 
-    public boolean productExists(String title, String author) throws Exception {
-        return productDAO.productExists(title, author);
-    }
-
-    public boolean productExistsExcludingId(String title, String author, long excludeId) throws Exception {
-        return productDAO.productExistsExcludingId(title, author, excludeId);
-    }
-
+    // Service methods
     public void addProduct(Product product) throws Exception {
         productDAO.saveProduct(product);
     }
