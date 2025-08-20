@@ -1,0 +1,7 @@
+INDEX VERSION 1.4+F:\Advance programing\pahanabookshop\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+1576069920.index
+2806318850.index
+204809852.index
+489113925.index
+1995529713.index
+1488650076.index

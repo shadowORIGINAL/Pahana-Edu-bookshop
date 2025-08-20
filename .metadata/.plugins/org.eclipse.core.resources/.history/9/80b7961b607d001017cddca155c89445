@@ -1,0 +1,168 @@
+package com.pahanaedu.controller;
+
+import com.pahanaedu.dao.UserDAO;
+import com.pahanaedu.model.User;
+import com.pahanaedu.service.EmailService;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
+
+@WebServlet("/password-reset")
+public class PasswordResetServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String email = request.getParameter("email");
+        UserDAO userDAO = new UserDAO();
+        
+        try {
+            // 1. Check if user exists
+            User user = userDAO.getUserByEmail(email);
+            if (user == null) {
+                request.setAttribute("error", "No account found with that email.");
+                request.getRequestDispatcher("forgot-password.jsp").forward(request, response);
+                return;
+            }
+            
+            // 2. Generate token
+            String token = UUID.randomUUID().toString();
+            LocalDateTime expiryDate = LocalDateTime.now().plus(24, ChronoUnit.HOURS);
+            
+            // 3. Store token in database
+            userDAO.storePasswordResetToken(user.getId(), token, expiryDate);
+            
+            // 4. Send email
+            EmailService emailService = new EmailService();
+            String resetLink = request.getRequestURL().toString()
+                .replace("password-reset", "reset-password.jsp") 
+                + "?token=" + token;
+            
+            String emailContent = """
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Password Reset Request - Pahana Edu</title>
+                    <style>
+                        body {
+                            font-family: 'Inter', Arial, sans-serif;
+                            background-color: #f4f4f4;
+                            color: #333333;
+                            line-height: 1.6;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        .container {
+                            max-width: 600px;
+                            margin: 20px auto;
+                            background-color: #ffffff;
+                            border-radius: 12px;
+                            overflow: hidden;
+                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                        }
+                        .header {
+                            background: linear-gradient(135deg, #ffd700, #ff6b6b);
+                            padding: 20px;
+                            text-align: center;
+                        }
+                        .header h1 {
+                            margin: 0;
+                            font-size: 24px;
+                            color: #0f0f0f;
+                        }
+                        .content {
+                            padding: 20px;
+                            text-align: center;
+                        }
+                        .content p {
+                            margin: 0 0 20px;
+                            font-size: 16px;
+                        }
+                        .btn {
+                            display: inline-block;
+                            padding: 12px 24px;
+                            background: linear-gradient(135deg, #ffd700, #ffed4e);
+                            color: #0f0f0f;
+                            text-decoration: none;
+                            font-weight: 600;
+                            border-radius: 50px;
+                            transition: all 0.3s ease;
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                        }
+                        .btn:hover {
+                            background: linear-gradient(135deg, #ffed4e, #ffd700);
+                            transform: translateY(-2px);
+                        }
+                        .footer {
+                            background-color: #f4f4f4;
+                            padding: 20px;
+                            text-align: center;
+                            font-size: 14px;
+                            color: #666666;
+                        }
+                        .footer p {
+                            margin: 0;
+                        }
+                        .footer a {
+                            color: #ffd700;
+                            text-decoration: none;
+                        }
+                        .footer a:hover {
+                            text-decoration: underline;
+                        }
+                        @media only screen and (max-width: 600px) {
+                            .container {
+                                margin: 10px;
+                                padding: 10px;
+                            }
+                            .header h1 {
+                                font-size: 20px;
+                            }
+                            .content p {
+                                font-size: 14px;
+                            }
+                            .btn {
+                                padding: 10px 20px;
+                                font-size: 14px;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <h1>Pahana Edu - Password Reset</h1>
+                        </div>
+                        <div class="content">
+                            <p>Dear %s,</p>
+                            <p>We received a request to reset your password for your Pahana Edu account. Click the button below to reset your password. This link is valid for 24 hours.</p>
+                            <a href="%s" class="btn">Reset Your Password</a>
+                            <p>If you did not request a password reset, please ignore this email or contact our support team.</p>
+                            <p>For security, this link will expire on %s.</p>
+                        </div>
+                        <div class="footer">
+                            <p>Need help? <a href="mailto:support@pahanaedu.com">Contact our support team</a>.</p>
+                            <p>&copy; 2025 Pahana Edu. All rights reserved.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+                """.formatted(user.getFirstName() + " " + user.getLastName(), resetLink, expiryDate.toString());
+            
+            emailService.sendEmail(email, "Password Reset Request - Pahana Edu", emailContent);
+            
+            // 5. Redirect to login page with success message
+            response.sendRedirect("login.jsp?message=Password+reset+link+has+been+sent+to+your+email.");
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Error processing password reset. Please try again.");
+            request.getRequestDispatcher("forgot-password.jsp").forward(request, response);
+        }
+    }
+}

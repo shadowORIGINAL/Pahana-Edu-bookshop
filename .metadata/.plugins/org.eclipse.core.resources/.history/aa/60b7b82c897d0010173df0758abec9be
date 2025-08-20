@@ -1,0 +1,373 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="com.pahanaedu.model.User" %>
+<%
+    String role = (String) session.getAttribute("role");
+    if (role == null) {
+        role = "CUSTOMER"; // Default to Customer for non-logged-in users
+    }
+%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & Support - Pahana Edu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f0f;
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            padding: 1.5rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffd700, #ff6b6b);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffd700;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 800px;
+            margin: 120px auto 2rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, #ffd700, #ff6b6b);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 1.5rem 0 1rem;
+            color: #ffffff;
+        }
+
+        .faq-item {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            background: rgba(255, 215, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .faq-item h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+        }
+
+        .faq-item p {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #0f0f0f;
+            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.3);
+            margin: 2rem auto;
+            text-align: center;
+            display: block;
+            width: fit-content;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 48px rgba(255, 215, 0, 0.4);
+        }
+
+        .contact-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .contact-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                margin: 100px 1rem 1rem;
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .nav-links a {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f0f0f;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ffd700, #ff6b6b);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #ffed4e, #ff6b6b);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">Pahana Edu</div>
+            <div class="nav-links">
+                <a href="index.jsp">Home</a>
+                <% if (role.equalsIgnoreCase("ADMIN")) { %>
+                    <a href="admin_dashboard.jsp">Dashboard</a>
+                    <a href="ManageStaffServlet">Manage Staff</a>
+                    <a href="ManageCustomersServlet">Manage Customers</a>
+                <% } else if (role.equalsIgnoreCase("STAFF")) { %>
+                    <a href="staff_dashboard.jsp">Dashboard</a>
+                    <a href="ManageCustomersServlet">Manage Customers</a>
+                <% } else { %>
+                    <a href="products.jsp">Browse Products</a>
+                    <a href="orders.jsp">My Orders</a>
+                <% } %>
+                <a href="profile.jsp">Profile</a>
+                <a href="login.jsp">Login</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Help & Support</h1>
+
+        <% if (role.equalsIgnoreCase("ADMIN")) { %>
+            <h2>Admin FAQs</h2>
+            <div class="faq-item">
+                <h3>How do I add a new staff member?</h3>
+                <p>Navigate to the "Manage Staff" page from the admin dashboard, click "Add Staff," and fill out the form with the staff member's details. A temporary password will be emailed to them.</p>
+            </div>
+            <div class="faq-item">
+                <h3>How can I manage products?</h3>
+                <p>Go to the admin dashboard and select "Manage Products." You can add, edit, or delete products, including setting prices and stock quantities.</p>
+            </div>
+            <div class="faq-item">
+                <h3>How do I view all orders?</h3>
+                <p>From the admin dashboard, click "View Orders" to see a paginated list of all orders, including customer details and order statuses.</p>
+            </div>
+        <% } else if (role.equalsIgnoreCase("STAFF")) { %>
+            <h2>Staff FAQs</h2>
+            <div class="faq-item">
+                <h3>How do I add a new customer?</h3>
+                <p>Go to the "Manage Customers" page from the staff dashboard, click "Add Customer," and complete the form. The customer will receive an email with their login credentials.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Can I update product stock?</h3>
+                <p>Yes, from the staff dashboard, navigate to "Manage Products" to update stock quantities or other product details as authorized.</p>
+            </div>
+            <div class="faq-item">
+                <h3>How do I assist with customer orders?</h3>
+                <p>Access the "View Orders" section to see customer orders, check their status, and contact customers for any clarifications.</p>
+            </div>
+        <% } else { %>
+            <h2>Customer FAQs</h2>
+            <div class="faq-item">
+                <h3>How do I place an order?</h3>
+                <p>Browse products on the "Browse Products" page, add items to your cart, and proceed to checkout to place your order.</p>
+            </div>
+            <div class="faq-item">
+                <h3>How can I reset my password?</h3>
+                <p>Click "Forgot Password" on the login page, enter your email, and follow the link sent to your email to reset your password.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Where can I view my order history?</h3>
+                <p>Log in and go to the "My Orders" page to see a list of your past orders, including details and statuses.</p>
+            </div>
+        <% } %>
+
+        <a href="mailto:support@pahanaedu.com" class="contact-btn">Contact Support</a>
+    </div>
+
+    <script>
+        // Button ripple effect
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.contact-btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.cssText = `
+                        position: absolute;
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                        background: rgba(255, 255, 255, 0.3);
+                        border-radius: 50%;
+                        transform: scale(0);
+                        animation: ripple 0.6s linear;
+                        pointer-events: none;
+                        z-index: 10;
+                    `;
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe container and FAQ items for animation
+        const container = document.querySelector('.container');
+        container.style.opacity = '0';
+        container.style.transform = 'translateY(30px)';
+        container.style.transition = 'all 0.6s ease-out';
+        observer.observe(container);
+
+        const faqItems = document.querySelectorAll('.faq-item');
+        faqItems.forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(30px)';
+            item.style.transition = 'all 0.6s ease-out';
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>
