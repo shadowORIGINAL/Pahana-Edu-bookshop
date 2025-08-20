@@ -11,35 +11,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderService {
-    private final OrderDAO orderDAO;
-    private final ProductDAO productDAO;
-    private final UserDAO userDAO;
-    private final EmailService emailService;
 
-    // 🔹 Step 1: Singleton instance
-    private static volatile OrderService instance;
+    // Singleton instance
+    private static OrderService instance;
 
-    // 🔹 Step 2: Private constructor
-    private OrderService() {
-        this.orderDAO = new OrderDAO();
-        this.productDAO = new ProductDAO();
-        this.userDAO = new UserDAO();
-        this.emailService = EmailService.getInstance(); // Already singleton
-    }
+    // DAOs and EmailService
+    private final OrderDAO orderDAO = new OrderDAO();
+    private final ProductDAO productDAO = new ProductDAO();
+    private final UserDAO userDAO = new UserDAO();
+    private final EmailService emailService = EmailService.getInstance();
 
-    // 🔹 Step 3: Global access point
-    public static OrderService getInstance() {
+    // Private constructor prevents instantiation
+    private OrderService() {}
+
+    // Thread-safe access to the single instance
+    public static synchronized OrderService getInstance() {
         if (instance == null) {
-            synchronized (OrderService.class) {
-                if (instance == null) {
-                    instance = new OrderService();
-                }
-            }
+            instance = new OrderService();
         }
         return instance;
     }
 
-    // ✅ All your business logic stays the same
+    // -------------------- Public Methods --------------------
+
     public Order createOrder(Order order, List<OrderItem> items) throws Exception {
         validateStock(items);
         calculateOrderTotal(order, items);
@@ -52,25 +46,51 @@ public class OrderService {
 
         processOrderItems(orderId, items);
 
-        int totalUnits = items.stream()
-                             .mapToInt(OrderItem::getQuantity)
-                             .sum();
+        // Update customer units
+        updateCustomerUnits(order.getCustomerId(), items, order);
 
-        User customer = userDAO.getUserById(order.getCustomerId());
-        if (customer != null) {
-            int newUnits = customer.getUnitsConsumed() + totalUnits;
-            customer.setUnitsConsumed(newUnits);
-            userDAO.updateUser(customer);
-            order.setNewUnitsConsumed(newUnits);
-            order.setCustomer(customer);
-        }
-
+        // Fetch complete order
         Order completeOrder = orderDAO.getOrderById(orderId);
 
+        // Send confirmation email
         sendOrderConfirmation(completeOrder);
 
         return completeOrder;
     }
+
+    public List<Order> getAllOrders() throws Exception {
+        return orderDAO.getAllOrders();
+    }
+
+    public Order getOrderById(long id) throws Exception {
+        return orderDAO.getOrderById(id);
+    }
+
+    public List<Order> getOrdersByCustomer(Long customerId) throws Exception {
+        List<Order> orders = new ArrayList<>();
+        Connection conn = DBConnection.getInstance(); // do NOT close singleton connection
+
+        String sql = "SELECT * FROM orders WHERE customer_id = ? ORDER BY order_date DESC";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, customerId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Order order = new Order();
+                    order.setOrderId(rs.getLong("order_id"));
+                    order.setCustomerId(rs.getLong("customer_id"));
+                    order.setOrderDate(rs.getTimestamp("order_date").toLocalDateTime());
+                    order.setTotalAmount(rs.getDouble("total_amount"));
+                    order.setStatus(rs.getString("status"));
+                    orders.add(order);
+                }
+            }
+        }
+
+        return orders;
+    }
+
+    // -------------------- Private Helper Methods --------------------
 
     private void validateStock(List<OrderItem> items) throws Exception {
         for (OrderItem item : items) {
@@ -102,6 +122,19 @@ public class OrderService {
         }
     }
 
+    private void updateCustomerUnits(Long customerId, List<OrderItem> items, Order order) throws Exception {
+        int totalUnits = items.stream().mapToInt(OrderItem::getQuantity).sum();
+        User customer = userDAO.getUserById(customerId);
+
+        if (customer != null) {
+            customer.setUnitsConsumed(customer.getUnitsConsumed() + totalUnits);
+            userDAO.updateUser(customer);
+
+            order.setNewUnitsConsumed(customer.getUnitsConsumed());
+            order.setCustomer(customer);
+        }
+    }
+
     private void sendOrderConfirmation(Order order) {
         try {
             if (order.getCustomer() == null || order.getCustomer().getEmail() == null) {
@@ -111,9 +144,9 @@ public class OrderService {
 
             String emailContent = buildEmailContent(order);
             emailService.sendEmail(
-                order.getCustomer().getEmail(),
-                "Your Order Confirmation - #" + order.getBillNumber(),
-                emailContent
+                    order.getCustomer().getEmail(),
+                    "Your Order Confirmation - #" + order.getBillNumber(),
+                    emailContent
             );
         } catch (Exception e) {
             System.err.println("Failed to send confirmation email for order: " + order.getOrderId());
@@ -128,61 +161,32 @@ public class OrderService {
         content.append("<p>Order #").append(order.getBillNumber()).append("</p>");
         content.append("<p>Date: ").append(order.getOrderDate()).append("</p>");
 
+        // Items table
         content.append("<table border='1' cellpadding='5' style='border-collapse: collapse; width: 100%;'>");
         content.append("<tr style='background-color: #f5f0e8;'>")
-              .append("<th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr>");
+                .append("<th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr>");
 
         for (OrderItem item : order.getItems()) {
-            double itemTotal = item.getUnitPrice() * item.getQuantity() * 
-                             (1 - (item.getDiscountPercentage() / 100));
+            double itemTotal = item.getUnitPrice() * item.getQuantity() *
+                    (1 - (item.getDiscountPercentage() / 100));
             content.append("<tr>")
-                  .append("<td>").append(item.getProduct().getTitle()).append("</td>")
-                  .append("<td>").append(item.getQuantity()).append("</td>")
-                  .append("<td>$").append(String.format("%.2f", item.getUnitPrice())).append("</td>")
-                  .append("<td>$").append(String.format("%.2f", itemTotal)).append("</td>")
-                  .append("</tr>");
+                    .append("<td>").append(item.getProduct().getTitle()).append("</td>")
+                    .append("<td>").append(item.getQuantity()).append("</td>")
+                    .append("<td>$").append(String.format("%.2f", item.getUnitPrice())).append("</td>")
+                    .append("<td>$").append(String.format("%.2f", itemTotal)).append("</td>")
+                    .append("</tr>");
         }
 
+        // Order summary
         content.append("<tr style='background-color: #f5f0e8;'>")
-              .append("<td colspan='3'><strong>Subtotal:</strong></td>")
-              .append("<td><strong>$").append(String.format("%.2f", order.getTotalAmount())).append("</strong></td>")
-              .append("</tr>");
+                .append("<td colspan='3'><strong>Subtotal:</strong></td>")
+                .append("<td><strong>$").append(String.format("%.2f", order.getTotalAmount())).append("</strong></td>")
+                .append("</tr>");
 
         content.append("</table>");
         content.append("<p style='margin-top: 20px;'>Thank you for shopping with us!</p>");
         content.append("</body></html>");
 
         return content.toString();
-    }
-
-    public List<Order> getAllOrders() throws Exception {
-        return orderDAO.getAllOrders();
-    }
-
-    public Order getOrderById(long id) throws Exception {
-        return orderDAO.getOrderById(id);
-    }
-
-    public List<Order> getOrdersByCustomer(Long customerId) throws Exception {
-        try (Connection conn = DBConnection.getInstance().getConnection()) {
-            String sql = "SELECT * FROM orders WHERE customer_id = ? ORDER BY order_date DESC";
-            List<Order> orders = new ArrayList<>();
-
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setLong(1, customerId);
-                ResultSet rs = stmt.executeQuery();
-
-                while (rs.next()) {
-                    Order order = new Order();
-                    order.setOrderId(rs.getLong("order_id"));
-                    order.setCustomerId(rs.getLong("customer_id"));
-                    order.setOrderDate(rs.getTimestamp("order_date").toLocalDateTime());
-                    order.setTotalAmount(rs.getDouble("total_amount"));
-                    order.setStatus(rs.getString("status"));
-                    orders.add(order);
-                }
-            }
-            return orders;
-        }
     }
 }

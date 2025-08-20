@@ -13,22 +13,19 @@ import java.util.logging.Logger;
 public class ProductDAO {
     private static final Logger logger = Logger.getLogger(ProductDAO.class.getName());
 
-    // Save new product
     public void saveProduct(Product product) throws Exception {
-        validateProduct(product);
-
         String sql = "INSERT INTO products (title, description, author, publisher, publication_date, " +
                      "category, price, stock_quantity, image_path, is_active, discount_percentage, featured) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        
+        try (Connection conn = DBConnection.getInstance();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
+            
             ps.setString(1, product.getTitle());
             ps.setString(2, product.getDescription());
             ps.setString(3, product.getAuthor());
             ps.setString(4, product.getPublisher());
-            ps.setDate(5, product.getPublicationDate() != null ?
+            ps.setDate(5, product.getPublicationDate() != null ? 
                       Date.valueOf(product.getPublicationDate()) : null);
             ps.setString(6, product.getCategory());
             ps.setDouble(7, product.getPrice());
@@ -39,7 +36,7 @@ public class ProductDAO {
             ps.setBoolean(12, product.isFeatured());
 
             int affectedRows = ps.executeUpdate();
-
+            
             if (affectedRows == 0) {
                 throw new SQLException("Creating product failed, no rows affected.");
             }
@@ -57,73 +54,16 @@ public class ProductDAO {
         }
     }
 
-    // Update existing product
-    public void updateProduct(Product product) throws Exception {
-        validateProduct(product);
-
-        String sql = "UPDATE products SET title=?, description=?, author=?, publisher=?, " +
-                     "publication_date=?, category=?, price=?, stock_quantity=?, image_path=?, " +
-                     "is_active=?, discount_percentage=?, featured=? WHERE product_id=?";
-
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, product.getTitle());
-            ps.setString(2, product.getDescription());
-            ps.setString(3, product.getAuthor());
-            ps.setString(4, product.getPublisher());
-            ps.setDate(5, product.getPublicationDate() != null ?
-                      Date.valueOf(product.getPublicationDate()) : null);
-            ps.setString(6, product.getCategory());
-            ps.setDouble(7, product.getPrice());
-            ps.setInt(8, product.getStockQuantity());
-            ps.setString(9, product.getImagePath());
-            ps.setBoolean(10, product.isActive());
-            ps.setDouble(11, product.getDiscountPercentage());
-            ps.setBoolean(12, product.isFeatured());
-            ps.setLong(13, product.getProductId());
-
-            int affectedRows = ps.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Updating product failed, no rows affected.");
-            }
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error updating product: " + product.getProductId(), e);
-            throw new Exception("Database error while updating product: " + e.getMessage());
-        }
-    }
-
-    // Delete product
-    public void deleteProduct(long id) throws Exception {
-        String sql = "DELETE FROM products WHERE product_id = ?";
-
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setLong(1, id);
-
-            int affectedRows = ps.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Deleting product failed, no rows affected.");
-            }
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error deleting product: " + id, e);
-            throw new Exception("Database error while deleting product: " + e.getMessage());
-        }
-    }
-
-    // Fetch all products
     public List<Product> getAllProducts(boolean activeOnly) throws Exception {
-        String sql = "SELECT * FROM products" + (activeOnly ? " WHERE is_active = TRUE" : "") +
+        String sql = "SELECT * FROM products" + (activeOnly ? " WHERE is_active = TRUE" : "") + 
                      " ORDER BY title";
         List<Product> products = new ArrayList<>();
+        
+        try (Connection conn = DBConnection.getInstance();
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-
+            
             while (rs.next()) {
                 products.add(mapResultSetToProduct(rs));
             }
@@ -134,15 +74,15 @@ public class ProductDAO {
         return products;
     }
 
-    // Fetch product by ID
     public Product getProductById(long id) throws Exception {
         String sql = "SELECT * FROM products WHERE product_id = ?";
+        
+        try (Connection conn = DBConnection.getInstance();
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-
+            
             ps.setLong(1, id);
-
+            
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return mapResultSetToProduct(rs);
@@ -155,20 +95,61 @@ public class ProductDAO {
         return null;
     }
 
-    // Validation before save/update
-    private void validateProduct(Product product) {
-        if (product == null) throw new IllegalArgumentException("Product cannot be null");
-        if (product.getTitle() == null || product.getTitle().isEmpty())
-            throw new IllegalArgumentException("Product title cannot be empty");
-        if (product.getPrice() < 0)
-            throw new IllegalArgumentException("Price cannot be negative");
-        if (product.getDiscountPercentage() < 0 || product.getDiscountPercentage() > 100)
-            throw new IllegalArgumentException("Discount must be between 0 and 100");
-        if (product.getStockQuantity() < 0)
-            throw new IllegalArgumentException("Stock quantity cannot be negative");
+    public void updateProduct(Product product) throws Exception {
+        String sql = "UPDATE products SET title=?, description=?, author=?, publisher=?, " +
+                     "publication_date=?, category=?, price=?, stock_quantity=?, image_path=?, " +
+                     "is_active=?, discount_percentage=?, featured=? WHERE product_id=?";
+        
+        try (Connection conn = DBConnection.getInstance();
+
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, product.getTitle());
+            ps.setString(2, product.getDescription());
+            ps.setString(3, product.getAuthor());
+            ps.setString(4, product.getPublisher());
+            ps.setDate(5, product.getPublicationDate() != null ? 
+                      Date.valueOf(product.getPublicationDate()) : null);
+            ps.setString(6, product.getCategory());
+            ps.setDouble(7, product.getPrice());
+            ps.setInt(8, product.getStockQuantity());
+            ps.setString(9, product.getImagePath());
+            ps.setBoolean(10, product.isActive());
+            ps.setDouble(11, product.getDiscountPercentage());
+            ps.setBoolean(12, product.isFeatured());
+            ps.setLong(13, product.getProductId());
+            
+            int affectedRows = ps.executeUpdate();
+            
+            if (affectedRows == 0) {
+                throw new SQLException("Updating product failed, no rows affected.");
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error updating product: " + product.getProductId(), e);
+            throw new Exception("Database error while updating product: " + e.getMessage());
+        }
     }
 
-    // Map SQL result to Product object
+    public void deleteProduct(long id) throws Exception {
+        String sql = "DELETE FROM products WHERE product_id = ?";
+        
+        try (Connection conn = DBConnection.getInstance();
+
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setLong(1, id);
+            
+            int affectedRows = ps.executeUpdate();
+            
+            if (affectedRows == 0) {
+                throw new SQLException("Deleting product failed, no rows affected.");
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error deleting product: " + id, e);
+            throw new Exception("Database error while deleting product: " + e.getMessage());
+        }
+    }
+
     private Product mapResultSetToProduct(ResultSet rs) throws SQLException {
         Product product = new Product();
         product.setProductId(rs.getLong("product_id"));

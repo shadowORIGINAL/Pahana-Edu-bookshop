@@ -20,7 +20,8 @@ public class UserDAO {
      */
     public User getUserByEmailAndPassword(String email, String password) throws Exception {
         String sql = "SELECT * FROM users WHERE email = ?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
             try (ResultSet rs = ps.executeQuery()) {
@@ -50,7 +51,8 @@ public class UserDAO {
         }
         String sql = "INSERT INTO users (email, password, first_name, last_name, role, address, telephone, is_active, units_consumed) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPassword()); // Use the hashed password from the User object
@@ -86,7 +88,8 @@ public class UserDAO {
             throw new Exception("User ID or new password cannot be null or empty.");
         }
         String sql = "UPDATE users SET password = ? WHERE id = ?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, hashedPassword); // Use the provided hashed password
             ps.setLong(2, userId);
@@ -124,7 +127,8 @@ public class UserDAO {
     public List<User> getAllUsersByRole(String role) throws Exception {
         String sql = "SELECT * FROM users WHERE role = ? ORDER BY last_name, first_name";
         List<User> users = new ArrayList<>();
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, role);
             try (ResultSet rs = ps.executeQuery()) {
@@ -144,7 +148,8 @@ public class UserDAO {
      */
     public User getUserById(long id) throws Exception {
         String sql = "SELECT * FROM users WHERE id = ?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -167,7 +172,8 @@ public class UserDAO {
             throw new Exception("Invalid email format.");
         }
         String sql = "UPDATE users SET email=?, first_name=?, last_name=?, address=?, telephone=?, is_active=?, units_consumed=? WHERE id=?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getFirstName());
@@ -192,7 +198,8 @@ public class UserDAO {
      */
     public void deleteUser(long id) throws Exception {
         String sql = "DELETE FROM users WHERE id = ?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, id);
             int affectedRows = ps.executeUpdate();
@@ -214,7 +221,8 @@ public class UserDAO {
                     "LOWER(last_name) LIKE LOWER(?) OR telephone LIKE ?) " +
                     "ORDER BY last_name, first_name";
         List<User> users = new ArrayList<>();
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, role);
             String likeTerm = "%" + searchTerm + "%";
@@ -239,7 +247,8 @@ public class UserDAO {
      */
     public void storePasswordResetToken(long userId, String token, LocalDateTime expiryDate) throws Exception {
         String sql = "INSERT INTO password_reset_tokens (user_id, token, expiry_date) VALUES (?, ?, ?)";
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, userId);
             ps.setString(2, token);
@@ -256,7 +265,8 @@ public class UserDAO {
      */
     public PasswordResetToken getPasswordResetToken(String token) throws Exception {
         String sql = "SELECT * FROM password_reset_tokens WHERE token = ?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, token);
             try (ResultSet rs = ps.executeQuery()) {
@@ -284,7 +294,8 @@ public class UserDAO {
      */
     public void invalidatePasswordResetToken(String token) throws Exception {
         String sql = "UPDATE password_reset_tokens SET used = TRUE WHERE token = ?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, token);
             int affectedRows = ps.executeUpdate();
@@ -302,7 +313,8 @@ public class UserDAO {
      */
     public User getUserByEmail(String email) throws Exception {
         String sql = "SELECT * FROM users WHERE email = ?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
             try (ResultSet rs = ps.executeQuery()) {
@@ -322,7 +334,8 @@ public class UserDAO {
      */
     public void deleteExpiredTokens() throws Exception {
         String sql = "DELETE FROM password_reset_tokens WHERE expiry_date < ? OR used = TRUE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getInstance();
+
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
             ps.executeUpdate();

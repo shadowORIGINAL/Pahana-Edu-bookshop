@@ -10,11 +10,11 @@ import javax.servlet.http.*;
 import java.io.IOException;
 
 public class RegisterServlet extends HttpServlet {
-	private final UserService userService = UserService.getInstance();
+    private final UserService userService = UserService.getInstance();
     private final EmailService emailService = EmailService.getInstance();
 
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
         // Get form parameters
@@ -62,122 +62,13 @@ public class RegisterServlet extends HttpServlet {
             
             // Send welcome email
             String subject = "Welcome to Pahana Edu!";
-            String content = """
-                <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Welcome to Pahana Edu</title>
-                    <style>
-                        body {
-                            font-family: 'Inter', Arial, sans-serif;
-                            background-color: #f4f4f4;
-                            color: #333333;
-                            line-height: 1.6;
-                            margin: 0;
-                            padding: 0;
-                        }
-                        .container {
-                            max-width: 600px;
-                            margin: 20px auto;
-                            background-color: #ffffff;
-                            border-radius: 12px;
-                            overflow: hidden;
-                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                        }
-                        .header {
-                            background: linear-gradient(135deg, #ffd700, #ff6b6b);
-                            padding: 20px;
-                            text-align: center;
-                        }
-                        .header h1 {
-                            margin: 0;
-                            font-size: 24px;
-                            color: #0f0f0f;
-                        }
-                        .content {
-                            padding: 20px;
-                            text-align: center;
-                        }
-                        .content p {
-                            margin: 0 0 15px;
-                            font-size: 16px;
-                        }
-                        .btn {
-                            display: inline-block;
-                            padding: 12px 24px;
-                            background: linear-gradient(135deg, #ffd700, #ffed4e);
-                            color: #0f0f0f;
-                            text-decoration: none;
-                            font-weight: 600;
-                            border-radius: 50px;
-                            transition: all 0.3s ease;
-                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                        }
-                        .btn:hover {
-                            background: linear-gradient(135deg, #ffed4e, #ffd700);
-                            transform: translateY(-2px);
-                        }
-                        .footer {
-                            background-color: #f4f4f4;
-                            padding: 20px;
-                            text-align: center;
-                            font-size: 14px;
-                            color: #666666;
-                        }
-                        .footer a {
-                            color: #ffd700;
-                            text-decoration: none;
-                        }
-                        .footer a:hover {
-                            text-decoration: underline;
-                        }
-                        @media only screen and (max-width: 600px) {
-                            .container {
-                                margin: 10px;
-                                padding: 10px;
-                            }
-                            .header h1 {
-                                font-size: 20px;
-                            }
-                            .content p {
-                                font-size: 14px;
-                            }
-                            .btn {
-                                padding: 10px 20px;
-                                font-size: 14px;
-                            }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        <div class="header">
-                            <h1>Welcome to Pahana Edu!</h1>
-                        </div>
-                        <div class="content">
-                            <p>Dear %s,</p>
-                            <p>Thank you for joining Pahana Edu! Your account has been successfully created.</p>
-                            <p>You can now log in using your email address and the password you chose.</p>
-                            <a href="%s" class="btn">Log In Now</a>
-                            <p>Explore our wide range of educational resources and start your learning journey today!</p>
-                            <p>If you have any questions, please contact our support team.</p>
-                        </div>
-                        <div class="footer">
-                            <p>Need help? <a href="mailto:support@pahanaedu.com">Contact our support team</a>.</p>
-                            <p>&copy; 2025 Pahana Edu. All rights reserved.</p>
-                        </div>
-                    </div>
-                </body>
-                </html>
-                """.formatted(
-                    user.getFirstName() + " " + user.getLastName(),
-                    request.getRequestURL().toString().replace("RegisterServlet", "login.jsp")
-                );
+            String content = "<h2>Thank you for registering!</h2>" +
+                           "<p>Your account has been successfully created.</p>" +
+                           "<p>You can now log in using your email address and the password you created.</p>" +
+                           "<p><a href=\"http://yourwebsite.com/login.jsp\">Click here to log in</a></p>" +
+                           "<p>Best regards,<br>Pahana Edu Team</p>";
             
             emailService.sendEmail(user.getEmail(), subject, content);
-
             
             // Redirect to login page with success message
             response.sendRedirect("login.jsp?success=Registration+successful.+Please+log+in.");
@@ -189,7 +80,7 @@ public class RegisterServlet extends HttpServlet {
         }
     }
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Show registration form
         request.getRequestDispatcher("register.jsp").forward(request, response);

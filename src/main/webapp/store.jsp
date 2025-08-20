@@ -191,8 +191,8 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 1rem 2rem;
-            font-size: 1rem;
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
             font-weight: 600;
             text-decoration: none;
             border-radius: 50px;
@@ -217,18 +217,6 @@
 
         .btn:hover::before {
             left: 100%;
-        }
-        
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.4);
-            transform: translateY(-3px);
         }
 
         .btn-danger {
@@ -879,36 +867,31 @@
             </ul>
 
             <div class="user-menu">
-                <% if (isLoggedIn) { %>
-                    <% 
-                        String roleBasedLink;
-                        if ("ADMIN".equals(user.getRole())) {
-                            roleBasedLink = "admin_dashboard.jsp";
-                        } else if ("STAFF".equals(user.getRole())) {
-                            roleBasedLink = "staff_dashboard.jsp";
-                        } else {
-                            roleBasedLink = "edit_profile.jsp";
-                        }
-                    %>
-                    <a href="<%= roleBasedLink %>" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem; text-decoration: none;">
-                        👤 <%= user.getFirstName() %>
-                    </a>
-                    <a href="cart.jsp" class="btn btn-info" style="padding: 0.5rem 1rem; font-size: 0.9rem; text-decoration: none; position: relative;">
-                        🛒 Cart
-                        <% if (cartCount > 0) { %>
-                            <span class="cart-count"><%= cartCount %></span>
-                        <% } %>
-                    </a>
-                    <a href="LogoutServlet" class="btn btn-danger" style="padding: 0.5rem 1rem; font-size: 0.9rem; text-decoration: none;" 
-                       onclick="return confirm('Are you sure you want to logout?')">
-                        🚪 Logout
-                    </a>
-                <% } else { %>
-                    <a href="login.jsp" class="btn btn-info" style="padding: 0.5rem 1rem; font-size: 0.9rem; text-decoration: none;">
-                        🔑 Login
-                    </a>
-                <% } %>
-            </div>
+				    <% if (isLoggedIn) { %>
+				        <% 
+				            String roleBasedLink;
+				            if ("ADMIN".equals(user.getRole())) {
+				                roleBasedLink = "admin_dashboard.jsp";
+				            } else if ("STAFF".equals(user.getRole())) {
+				                roleBasedLink = "staff_dashboard.jsp";
+				            } else {
+				                roleBasedLink = "edit_profile.jsp";
+				            }
+				        %>
+				        <a href="<%= roleBasedLink %>" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem; text-decoration: none;">
+				            👤 <%= user.getFirstName() %>
+				        </a>
+				        <a href="LogoutServlet" class="btn btn-danger" style="padding: 0.5rem 1rem; font-size: 0.9rem; text-decoration: none;" 
+				           onclick="return confirm('Are you sure you want to logout?')">
+				            🚪 Logout
+				        </a>
+				        
+				    <% } else { %>
+				        <a href="login.jsp" class="btn btn-info" style="padding: 0.5rem 1rem; font-size: 0.9rem; text-decoration: none;">
+				            🔑 Login
+				        </a>
+				    <% } %>
+				</div>
 
             <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
         </div>
@@ -1142,7 +1125,7 @@
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; 2025 Pahana Edu. All rights reserved.</p>
+                <p>&copy; 2025 Pahana Edu. All rights reserved. Made with ❤️ for book lovers.</p>
             </div>
         </div>
     </footer>

@@ -2,11 +2,11 @@
 <%@ page import="com.pahanaedu.model.User" %>
 <%@ page import="java.util.List" %>
 <%
-	User loggedInUser = (User) session.getAttribute("user");
-	if (loggedInUser == null || (!loggedInUser.getRole().equals("ADMIN") && !loggedInUser.getRole().equals("STAFF"))) {
-	    response.sendRedirect("login.jsp");
-	    return;
-	}
+    User loggedInUser = (User) session.getAttribute("user");
+    if (loggedInUser == null || !loggedInUser.getRole().equals("ADMIN")) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
     
     List<User> customerList = (List<User>) request.getAttribute("customerList");
     String success = request.getParameter("success");
@@ -1043,7 +1043,7 @@
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; 2025 Pahana Edu. All rights reserved.</p>
+                <p>&copy; 2025 Pahana Edu. All rights reserved. Made with ❤️ for learners.</p>
             </div>
         </div>
     </footer>

@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="com.pahanaedu.model.Product" %>
+
 <%@ page import="com.pahanaedu.model.User" %>
 <%@ page import="java.util.List" %>
 
@@ -9,9 +9,7 @@
     Integer cartCount = (Integer) session.getAttribute("cartCount");
     if (cartCount == null) cartCount = 0;
     
-    @SuppressWarnings("unchecked")
-    List<Product> products = (List<Product>) request.getAttribute("products");
-    String error = (String) request.getAttribute("error");
+
 %>
 
 <%
@@ -180,50 +178,6 @@
             align-items: center;
             gap: 1rem;
             margin-bottom: 1rem;
-        }
-        
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem 2rem;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            border: none;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: all 0.5s ease;
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
-        
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.4);
-            transform: translateY(-3px);
         }
 
         .user-avatar {
@@ -850,9 +804,10 @@
 	    <button class="hamburger-btn" id="hamburgerBtn">☰</button>
 	    <h1 class="top-bar-title">Admin Dashboard</h1>
 	    <div class="top-bar-actions">
-	    	<a href="profile.jsp" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem; text-decoration: none;">
-                        👤 <%= user.getFirstName() %>
-                    </a>
+	        <a href="profile.jsp" class="profile-btn" title="Edit Profile">
+	            <span class="profile-icon">👤</span>
+	            <span class="profile-text">Profile</span>
+	        </a>
 	        <button class="notification-btn">
 	            🔔
 	            <span class="notification-badge">3</span>
@@ -954,7 +909,51 @@
                 </div>
             </div>
 
-            
+            <!-- Recent Activity Section -->
+            <div class="quick-actions">
+                <h3>📋 Recent Activity</h3>
+                <div style="text-align: left; margin-top: 1rem;">
+                    <div class="activity-item">
+                        <strong>New staff member added:</strong> John Smith joined as Sales Associate
+                        <div class="activity-time">2 hours ago</div>
+                    </div>
+                    <div class="activity-item">
+                        <strong>Customer registration:</strong> 5 new customers registered today
+                        <div class="activity-time">4 hours ago</div>
+                    </div>
+                    <div class="activity-item">
+                        <strong>System update:</strong> Database backup completed successfully
+                        <div class="activity-time">6 hours ago</div>
+                    </div>
+                    <div class="activity-item">
+                        <strong>Order processed:</strong> 12 orders shipped to customers
+                        <div class="activity-time">8 hours ago</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Status -->
+            <div class="quick-actions">
+                <h3>🔧 System Status</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    <div style="padding: 1rem; background: rgba(40, 167, 69, 0.2); border-radius: 12px; border-left: 4px solid #28a745; text-align: center;">
+                        <div style="color: #28a745; font-weight: bold;">Server Status</div>
+                        <div style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;">Online</div>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(40, 167, 69, 0.2); border-radius: 12px; border-left: 4px solid #28a745; text-align: center;">
+                        <div style="color: #28a745; font-weight: bold;">Database</div>
+                        <div style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;">Connected</div>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(255, 193, 7, 0.2); border-radius: 12px; border-left: 4px solid #ffc107; text-align: center;">
+                        <div style="color: #ffc107; font-weight: bold;">Backup</div>
+                        <div style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;">Scheduled</div>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(40, 167, 69, 0.2); border-radius: 12px; border-left: 4px solid #28a745; text-align: center;">
+                        <div style="color: #28a745; font-weight: bold;">Security</div>
+                        <div style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;">Secure</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
