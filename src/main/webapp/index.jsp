@@ -961,6 +961,7 @@ String userRole = isLoggedIn ? user.getRole() : "GUEST";
                 <li><a href="store" class="nav-link">Store</a></li>
                 <li><a href="#services" class="nav-link">Services</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="help.jsp" class="nav-link">Help</a></li>
             </ul>
 
             <div class="user-menu">
@@ -1338,7 +1339,7 @@ String userRole = isLoggedIn ? user.getRole() : "GUEST";
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; 2025 Pahana Edu. All rights reserved. Made with ❤️ for learners.</p>
+                <p>&copy; 2025 Pahana Edu. All rights reserved.</p>
             </div>
         </div>
     </footer>

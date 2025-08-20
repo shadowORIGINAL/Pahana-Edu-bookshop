@@ -16,6 +16,18 @@
   	<description></description>
   	<servlet-class>com.pahanaedu.controller.RegisterServlet</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>ManageStaffServlet</servlet-name>
+  	<display-name>ManageStaffServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.pahanaedu.controller.ManageStaffServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>AddUserServlet</servlet-name>
+  	<display-name>AddUserServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.pahanaedu.controller.AddUserServlet</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>LoginServlet</servlet-name>
   	<url-pattern>/LoginServlet</url-pattern>
@@ -23,5 +35,13 @@
   <servlet-mapping>
   	<servlet-name>RegisterServlet</servlet-name>
   	<url-pattern>/RegisterServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>ManageStaffServlet</servlet-name>
+  	<url-pattern>/ManageStaffServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>AddUserServlet</servlet-name>
+  	<url-pattern>/AddUserServlet</url-pattern>
   </servlet-mapping>
 </web-app>

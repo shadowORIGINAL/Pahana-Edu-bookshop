@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class ProductServlet extends HttpServlet {
-    private final ProductService productService = ProductService.getInstance();
+	private final ProductService productService = ProductService.getInstance();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

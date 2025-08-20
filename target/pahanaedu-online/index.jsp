@@ -958,7 +958,7 @@ String userRole = isLoggedIn ? user.getRole() : "GUEST";
             <ul class="nav-menu" id="navMenu">
                 <li><a href="#home" class="nav-link">Home</a></li>
                 <li><a href="#features" class="nav-link">Features</a></li>
-                <li><a href="store" class="nav-link">Store</a></li>
+                <li><a href="store.jsp" class="nav-link">Store</a></li>
                 <li><a href="#services" class="nav-link">Services</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>

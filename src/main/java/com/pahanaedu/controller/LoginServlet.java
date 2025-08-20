@@ -9,9 +9,9 @@ import javax.servlet.http.*;
 import java.io.IOException;
 
 public class LoginServlet extends HttpServlet {
-    private final UserService userService = UserService.getInstance();
+	private final UserService userService = UserService.getInstance();
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
@@ -24,7 +24,7 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("user", user);
                 session.setAttribute("role", user.getRole());
                 
-                
+                // Redirect based on role
                 String redirectPage = switch (user.getRole()) {
                     case "ADMIN" -> "admin_dashboard.jsp";
                     case "STAFF" -> "staff_dashboard.jsp";
@@ -32,7 +32,7 @@ public class LoginServlet extends HttpServlet {
                 };
                 response.sendRedirect(redirectPage);
             } else {
-                
+                // Failed login
                 request.setAttribute("error", "Invalid email or password");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }

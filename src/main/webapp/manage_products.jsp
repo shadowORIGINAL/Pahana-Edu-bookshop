@@ -28,178 +28,352 @@
         }
 
         body {
-            font-family: 'Georgia', serif;
-            background: linear-gradient(135deg, #faf7f2 0%, #f5f0e8 100%);
-            color: #5d4e37;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f0f;
+            color: #ffffff;
             line-height: 1.6;
-            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Header */
-        .admin-header {
-            background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
-            color: #faf7f2;
-            padding: 1.5rem 0;
-            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
-            margin-bottom: 2rem;
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
         }
 
-        .admin-header h1 {
-            text-align: center;
-            font-size: 2.2rem;
+        .navbar.scrolled {
+            background: rgba(15, 15, 15, 0.98);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
             color: #ffd700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-decoration: none;
+            transition: all 0.3s ease;
         }
 
-        .admin-header .subtitle {
-            text-align: center;
-            margin-top: 0.5rem;
-            opacity: 0.9;
+        .logo:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ffd700, #ff6b6b);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::before {
+            width: 100%;
+        }
+
+        .nav-link:hover {
+            color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 8rem 0;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 2rem;
         }
 
-        /* Alert Styles */
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffd700 0%, #ff6b6b 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Alert Messages */
         .alert {
-            padding: 1rem 1.5rem;
-            margin-bottom: 2rem;
+            padding: 1rem 2rem;
+            margin: 1rem 0;
             border-radius: 12px;
-            border: none;
             font-weight: 500;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            animation: slideInUp 0.5s ease-out;
         }
 
         .alert-success {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            color: #155724;
-            border-left: 4px solid #28a745;
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(69, 160, 73, 0.05));
+            color: #ffffff;
+            border: 1px solid rgba(76, 175, 80, 0.3);
         }
 
         .alert-error {
-            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-            color: #721c24;
-            border-left: 4px solid #dc3545;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 107, 107, 0.05));
+            color: #ffffff;
+            border: 1px solid rgba(255, 107, 107, 0.3);
         }
 
-        /* Controls Section */
-        .controls-section {
-            background: white;
+        /* Section Card */
+        .section-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
             padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-radius: 24px;
             margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .section-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.2);
+        }
+
+        .section-card h3 {
+            color: #ffd700;
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
             display: flex;
-            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #0f0f0f;
+            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 48px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            color: #ffffff;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 48px rgba(78, 205, 196, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: #ffffff;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 48px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            color: #ffffff;
+        }
+
+        .btn-info:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 48px rgba(78, 205, 196, 0.4);
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Search Form */
+        .search-container {
+            display: flex;
+            gap: 1rem;
             align-items: center;
             flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .search-container {
-            flex: 1;
-            max-width: 400px;
-            position: relative;
         }
 
         .search-input {
-            width: 100%;
-            padding: 0.8rem 1rem 0.8rem 2.5rem;
-            border: 2px solid #e6d7c3;
-            border-radius: 25px;
+            flex: 1;
+            min-width: 300px;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
             font-size: 1rem;
-            font-family: inherit;
             transition: all 0.3s ease;
-            background: #faf7f2;
         }
 
         .search-input:focus {
             outline: none;
-            border-color: #d2691e;
-            box-shadow: 0 0 10px rgba(210, 105, 30, 0.2);
-            background: white;
+            border-color: #ffd700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
         }
 
-        .search-icon {
-            position: absolute;
-            left: 0.8rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #8b4513;
-        }
-
-        .add-product-btn {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-            padding: 0.8rem 2rem;
-            border: none;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-        }
-
-        .add-product-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
-        }
-
-        /* Products Table */
+        /* Table Styles */
         .table-container {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            overflow: hidden;
+            overflow-x: auto;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .table-header {
-            background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
-            color: #ffd700;
-            padding: 1.5rem;
-            text-align: center;
-        }
-
-        .table-header h2 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        table {
+        .products-table {
             width: 100%;
             border-collapse: collapse;
+        }
+
+        .products-table thead {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .products-table th,
+        .products-table td {
+            padding: 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .products-table th {
+            color: #ffd700;
+            font-weight: 600;
+            text-transform: uppercase;
             font-size: 0.9rem;
         }
 
-        th {
-            background: #f8f5f0;
-            color: #8b4513;
-            padding: 1rem 0.8rem;
-            text-align: left;
-            font-weight: bold;
-            border-bottom: 2px solid #e6d7c3;
-            position: sticky;
-            top: 0;
-            z-index: 10;
+        .products-table td {
+            color: rgba(255, 255, 255, 0.9);
         }
 
-        td {
-            padding: 1rem 0.8rem;
-            border-bottom: 1px solid #f0f0f0;
-            vertical-align: middle;
+        .products-table tbody tr:hover {
+            background: rgba(255, 215, 0, 0.05);
         }
 
-        tr {
-            transition: all 0.3s ease;
-        }
-
-        tr:hover {
-            background: linear-gradient(135deg, #faf7f2 0%, #f5f0e8 100%);
-            transform: scale(1.01);
+        .products-table tbody tr:last-child td {
+            border-bottom: none;
         }
 
         .product-image {
@@ -213,19 +387,19 @@
         .no-image {
             width: 60px;
             height: 80px;
-            background: linear-gradient(135deg, #d2691e 0%, #cd853f 100%);
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 8px;
-            color: white;
+            color: #0f0f0f;
             font-size: 0.8rem;
             text-align: center;
         }
 
         .product-title {
             font-weight: bold;
-            color: #8b4513;
+            color: #ffd700;
             max-width: 150px;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -233,13 +407,13 @@
         }
 
         .product-author {
-            color: #666;
+            color: rgba(255, 255, 255, 0.7);
             font-style: italic;
         }
 
         .price {
             font-weight: bold;
-            color: #e74c3c;
+            color: #ff6b6b;
             font-size: 1.1rem;
         }
 
@@ -252,14 +426,15 @@
         }
 
         .stock.out {
-            color: #e74c3c;
+            color: #ff6b6b;
         }
 
         .stock.good {
-            color: #27ae60;
+            color: #4ecdc4;
         }
 
-        .status {
+        /* Status Badge */
+        .status-badge {
             padding: 0.3rem 0.8rem;
             border-radius: 15px;
             font-size: 0.8rem;
@@ -267,137 +442,71 @@
             text-transform: uppercase;
         }
 
-        .status.active {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            color: #155724;
+        .status-active {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            color: #ffffff;
         }
 
-        .status.inactive {
-            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-            color: #721c24;
+        .status-inactive {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: #ffffff;
         }
 
-        /* Action Buttons */
+        /* Action Buttons Container */
         .action-buttons {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
         }
 
-        .btn {
-            padding: 0.4rem 0.8rem;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-decoration: none;
-            color: white;
-            transition: all 0.3s ease;
-            min-width: 60px;
-            text-align: center;
-        }
-
-        .btn-edit {
-            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
-        }
-
-        .btn-delete {
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-        }
-
-        .btn-toggle {
-            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
-            color: #212529;
-        }
-
-        .btn-activate {
-            background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-
         /* Modal Styles */
-        .modal {
+        .modal-overlay {
             display: none;
             position: fixed;
-            z-index: 1000;
-            left: 0;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
         }
 
-        .modal-content {
-            background: white;
-            margin: 2% auto;
-            padding: 0;
-            border-radius: 20px;
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             width: 90%;
             max-width: 700px;
-            max-height: 90vh;
+            max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: modalSlideIn 0.3s ease-out;
+            animation: slideInModal 0.3s ease;
         }
 
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-50px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        .modal-header {
-            background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
+        @keyframes slideInModal {
+            from { opacity: 0; transform: translate(-50%, -60%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        .modal h2 {
             color: #ffd700;
-            padding: 1.5rem 2rem;
-            border-radius: 20px 20px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h2 {
-            margin: 0;
+            margin-bottom: 1.5rem;
+            text-align: center;
             font-size: 1.5rem;
         }
 
-        .close {
-            color: #ffd700;
-            font-size: 2rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            background: none;
-        }
-
-        .close:hover {
-            color: white;
-            transform: scale(1.1);
-        }
-
-        .modal-body {
-            padding: 2rem;
-        }
-
         /* Form Styles */
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
         .form-group {
             margin-bottom: 1.5rem;
         }
@@ -405,30 +514,29 @@
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            font-weight: bold;
-            color: #8b4513;
+            font-weight: 600;
+            color: #ffffff;
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #e6d7c3;
-            border-radius: 10px;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
             font-size: 1rem;
-            font-family: inherit;
             transition: all 0.3s ease;
-            background: #faf7f2;
         }
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #d2691e;
-            box-shadow: 0 0 10px rgba(210, 105, 30, 0.2);
-            background: white;
+            border-color: #ffd700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
         }
 
         .form-group textarea {
@@ -440,51 +548,11 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            margin-bottom: 1rem;
         }
 
         .checkbox-group input[type="checkbox"] {
             width: auto;
             transform: scale(1.2);
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #e6d7c3;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-            color: white;
-            padding: 0.8rem 2rem;
-            border: none;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
-            color: white;
-            padding: 0.8rem 2rem;
-            border: none;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover,
-        .btn-secondary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
         .current-image {
@@ -493,6 +561,22 @@
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             margin-bottom: 1rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
         }
 
         /* Stats Cards */
@@ -504,432 +588,857 @@
         }
 
         .stat-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
             padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             text-align: center;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .stat-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.2);
         }
 
         .stat-number {
             font-size: 2rem;
             font-weight: bold;
-            color: #8b4513;
+            color: #ffd700;
             margin-bottom: 0.5rem;
         }
 
         .stat-label {
-            color: #666;
+            color: rgba(255, 255, 255, 0.6);
             font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
+        /* Footer */
+        .footer {
+            background: #0a0a0a;
+            padding: 4rem 0 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h4 {
+            color: #ffd700;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            line-height: 1.8;
+            transition: all 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #ffd700;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: #ffd700;
+            color: #0f0f0f;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #0f0f0f;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
-            .controls-section {
+            .nav-menu {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                right: 0;
+                background: rgba(15, 15, 15, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 2rem;
+                display: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                z-index: 999;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .section-card {
+                padding: 1.5rem;
+            }
+
+            .search-container {
                 flex-direction: column;
                 align-items: stretch;
             }
 
-            .search-container {
-                max-width: none;
-            }
-
-            table {
-                font-size: 0.8rem;
-            }
-
-            th, td {
-                padding: 0.5rem 0.3rem;
+            .search-input {
+                min-width: auto;
             }
 
             .action-buttons {
-                flex-direction: column;
+                justify-content: center;
             }
 
-            .modal-content {
-                width: 95%;
-                margin: 5% auto;
+            .products-table th,
+            .products-table td {
+                padding: 1rem;
+                font-size: 0.9rem;
             }
 
-            .form-grid {
-                grid-template-columns: 1fr;
+            .modal {
+                padding: 1.5rem;
+                margin: 1rem;
+                width: calc(100% - 2rem);
             }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f0f0f;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ffd700, #ff6b6b);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #ffed4e, #ff6b6b);
+        }
+
+        /* Page Loader */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-content {
+            text-align: center;
+            color: #ffd700;
+        }
+
+        .loader-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: spin 2s linear infinite;
         }
     </style>
 </head>
 <body>
-    <!-- Admin Header -->
-    <div class="admin-header">
-        <div class="container">
-            <h1>📚 Pahana Edu Admin</h1>
-            <p class="subtitle">Product Management Dashboard</p>
+    <!-- Page Loader -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-content">
+            <div class="loader-icon">📚</div>
+            <h3>Loading Pahana Edu...</h3>
         </div>
     </div>
 
-    <div class="container">
-        <!-- Alerts -->
-        <% if (success != null) { %>
-            <div class="alert alert-success">
-                <strong>✅ Success!</strong> <%= success %>
-            </div>
-        <% } %>
-        
-        <% if (error != null) { %>
-            <div class="alert alert-error">
-                <strong>❌ Error!</strong> <%= error %>
-            </div>
-        <% } %>
-
-        <!-- Stats Cards -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number"><%= productList != null ? productList.size() : 0 %></div>
-                <div class="stat-label">Total Products</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">
-                    <% 
-                    int activeCount = 0;
-                    if (productList != null) {
-                        for (Product p : productList) {
-                            if (p.isActive()) activeCount++;
-                        }
-                    }
-                    %>
-                    <%= activeCount %>
-                </div>
-                <div class="stat-label">Active Products</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">
-                    <% 
-                    int lowStockCount = 0;
-                    if (productList != null) {
-                        for (Product p : productList) {
-                            if (p.getStockQuantity() <= 5 && p.getStockQuantity() > 0) lowStockCount++;
-                        }
-                    }
-                    %>
-                    <%= lowStockCount %>
-                </div>
-                <div class="stat-label">Low Stock Items</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">
-                    <% 
-                    int featuredCount = 0;
-                    if (productList != null) {
-                        for (Product p : productList) {
-                            if (p.isFeatured()) featuredCount++;
-                        }
-                    }
-                    %>
-                    <%= featuredCount %>
-                </div>
-                <div class="stat-label">Featured Products</div>
-            </div>
-        </div>
-
-        <!-- Controls Section -->
-        <div class="controls-section">
-            <div class="search-container">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="searchInput" class="search-input" 
-                       placeholder="Search by title or author..." onkeyup="filterTable()">
-            </div>
-            <button onclick="openAddModal()" class="add-product-btn">
-                ➕ Add New Product
-            </button>
-        </div>
-
-        <!-- Products Table -->
-        <div class="table-container">
-            <div class="table-header">
-                <h2>Product Inventory</h2>
-                <p>Manage your book collection with ease</p>
-            </div>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.jsp" class="logo">
+                📖 Pahana Edu
+            </a>
             
-            <table id="productsTable">
-                <thead>
-                    <tr>
-                        <th>📷 Image</th>
-                        <th>📖 Title</th>
-                        <th>✍️ Author</th>
-                        <th>💰 Price</th>
-                        <th>📦 Stock</th>
-                        <th>📈 Status</th>
-                        <th>⚙️ Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% if (productList != null) { %>
-                        <% for (Product product : productList) { %>
-                        <tr>
-                            <td>
-                                <% if (product.getImagePath() != null && !product.getImagePath().isEmpty()) { %>
-                                    <img src="<%= request.getContextPath() + "/" + product.getImagePath() %>" 
-                                         alt="<%= product.getTitle() %>" class="product-image">
-                                <% } else { %>
-                                    <div class="no-image">No Image</div>
-                                <% } %>
-                            </td>
-                            <td>
-                                <div class="product-title" title="<%= product.getTitle() %>">
-                                    <%= product.getTitle() %>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="product-author"><%= product.getAuthor() %></div>
-                            </td>
-                            <td>
-                                <div class="price">$<%= String.format("%.2f", product.getPrice()) %></div>
-                            </td>
-                            <td>
-                                <div class="stock <%= product.getStockQuantity() == 0 ? "out" : 
-                                                     product.getStockQuantity() <= 5 ? "low" : "good" %>">
-                                    <%= product.getStockQuantity() %>
-                                    <% if (product.getStockQuantity() == 0) { %>
-                                        (Out)
-                                    <% } else if (product.getStockQuantity() <= 5) { %>
-                                        (Low)
-                                    <% } %>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="status <%= product.isActive() ? "active" : "inactive" %>">
-                                    <%= product.isActive() ? "Active" : "Inactive" %>
-                                </span>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button onclick="openEditModal(
-                                        '<%= product.getProductId() %>',
-                                        '<%= product.getTitle().replace("'", "\\'") %>',
-                                        '<%= product.getDescription().replace("'", "\\'") %>',
-                                        '<%= product.getAuthor().replace("'", "\\'") %>',
-                                        '<%= product.getPublisher() != null ? product.getPublisher().replace("'", "\\'") : "" %>',
-                                        '<%= product.getPublicationDate() != null ? product.getPublicationDate() : "" %>',
-                                        '<%= product.getCategory().replace("'", "\\'") %>',
-                                        '<%= product.getPrice() %>',
-                                        '<%= product.getStockQuantity() %>',
-                                        '<%= product.getImagePath() != null ? product.getImagePath().replace("'", "\\'") : "" %>',
-                                        '<%= product.isActive() %>',
-                                        '<%= product.getDiscountPercentage() %>',
-                                        '<%= product.isFeatured() %>'
-                                    )" class="btn btn-edit">✏️ Edit</button>
-                                    
-                                    <form action="ManageProductsServlet" method="post" style="display:inline;">
-                                        <input type="hidden" name="action" value="delete">
-                                        <input type="hidden" name="id" value="<%= product.getProductId() %>">
-                                        <button type="submit" onclick="return confirm('⚠️ Are you sure you want to delete this product? This action cannot be undone.')" 
-                                                class="btn btn-delete">🗑️ Delete</button>
-                                    </form>
-                                    
-                                    <form action="ManageProductsServlet" method="post" style="display:inline;">
-                                        <input type="hidden" name="action" value="toggleActive">
-                                        <input type="hidden" name="id" value="<%= product.getProductId() %>">
-                                        <button type="submit" class="btn <%= product.isActive() ? "btn-toggle" : "btn-activate" %>">
-                                            <%= product.isActive() ? "⏸️ Deactivate" : "▶️ Activate" %>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        <% } %>
-                    <% } %>
-                </tbody>
-            </table>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.jsp#home" class="nav-link">Home</a></li>
+                <li><a href="index.jsp#features" class="nav-link">Features</a></li>
+                <li><a href="store" class="nav-link">Store</a></li>
+                <li><a href="index.jsp#services" class="nav-link">Services</a></li>
+                <li><a href="index.jsp#contact" class="nav-link">Contact</a></li>
+            </ul>
+
+            <div class="user-menu">
+                <a href="admin_dashboard.jsp" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem; text-decoration: none;">
+                    👤 <%= loggedInUser.getFirstName() %>
+                </a>
+                <a href="LogoutServlet" class="btn btn-danger" style="padding: 0.5rem 1rem; font-size: 0.9rem; text-decoration: none;" 
+                   onclick="return confirm('Are you sure you want to logout?')">
+                    🚪 Logout
+                </a>
+            </div>
+
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
         </div>
-    </div>
-    
+    </nav>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Manage Products</h2>
+                <p class="section-subtitle">
+                    Manage your book collection with ease
+                </p>
+            </div>
+
+            <!-- Alerts -->
+            <% if (success != null) { %>
+                <div class="alert alert-success">
+                    ✅ <%= success %>
+                </div>
+            <% } %>
+            
+            <% if (error != null) { %>
+                <div class="alert alert-error">
+                    ❌ <%= error %>
+                </div>
+            <% } %>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number"><%= productList != null ? productList.size() : 0 %></div>
+                    <div class="stat-label">Total Products</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">
+                        <% 
+                        int activeCount = 0;
+                        if (productList != null) {
+                            for (Product p : productList) {
+                                if (p.isActive()) activeCount++;
+                            }
+                        }
+                        %>
+                        <%= activeCount %>
+                    </div>
+                    <div class="stat-label">Active Products</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">
+                        <% 
+                        int lowStockCount = 0;
+                        if (productList != null) {
+                            for (Product p : productList) {
+                                if (p.getStockQuantity() <= 5 && p.getStockQuantity() > 0) lowStockCount++;
+                            }
+                        }
+                        %>
+                        <%= lowStockCount %>
+                    </div>
+                    <div class="stat-label">Low Stock Items</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">
+                        <% 
+                        int featuredCount = 0;
+                        if (productList != null) {
+                            for (Product p : productList) {
+                                if (p.isFeatured()) featuredCount++;
+                            }
+                        }
+                        %>
+                        <%= featuredCount %>
+                    </div>
+                    <div class="stat-label">Featured Products</div>
+                </div>
+            </div>
+
+            <!-- Controls Section -->
+            <div class="section-card">
+                <h3>🆕 Quick Actions</h3>
+                <div class="search-container">
+                    <input type="text" id="searchInput" class="search-input" 
+                           placeholder="Search by title or author..." onkeyup="filterTable()">
+                    <button onclick="openAddModal()" class="btn btn-info">➕ Add New Product</button>
+                </div>
+            </div>
+
+            <!-- Products Table -->
+            <div class="section-card">
+                <h3>📚 Product Inventory</h3>
+                <div class="table-container">
+                    <table class="products-table" id="productsTable">
+                        <thead>
+                            <tr>
+                                <th>📷 Image</th>
+                                <th>📖 Title</th>
+                                <th>✍️ Author</th>
+                                <th>💰 Price</th>
+                                <th>📦 Stock</th>
+                                <th>📈 Status</th>
+                                <th>⚙️ Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (productList != null) { %>
+                                <% for (Product product : productList) { %>
+                                <tr>
+                                    <td>
+                                        <% if (product.getImagePath() != null && !product.getImagePath().isEmpty()) { %>
+                                            <img src="<%= request.getContextPath() + "/" + product.getImagePath() %>" 
+                                                 alt="<%= product.getTitle() %>" class="product-image">
+                                        <% } else { %>
+                                            <div class="no-image">No Image</div>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <div class="product-title" title="<%= product.getTitle() %>">
+                                            <%= product.getTitle() %>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="product-author"><%= product.getAuthor() %></div>
+                                    </td>
+                                    <td>
+                                        <div class="price">$<%= String.format("%.2f", product.getPrice()) %></div>
+                                    </td>
+                                    <td>
+                                        <div class="stock <%= product.getStockQuantity() == 0 ? "out" : 
+                                                             product.getStockQuantity() <= 5 ? "low" : "good" %>">
+                                            <%= product.getStockQuantity() %>
+                                            <% if (product.getStockQuantity() == 0) { %>
+                                                (Out)
+                                            <% } else if (product.getStockQuantity() <= 5) { %>
+                                                (Low)
+                                            <% } %>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge <%= product.isActive() ? "status-active" : "status-inactive" %>">
+                                            <%= product.isActive() ? "Active" : "Inactive" %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button onclick="openEditModal(
+                                                '<%= product.getProductId() %>',
+                                                '<%= product.getTitle().replace("'", "\\'") %>',
+                                                '<%= product.getDescription().replace("'", "\\'") %>',
+                                                '<%= product.getAuthor().replace("'", "\\'") %>',
+                                                '<%= product.getPublisher() != null ? product.getPublisher().replace("'", "\\'") : "" %>',
+                                                '<%= product.getPublicationDate() != null ? product.getPublicationDate() : "" %>',
+                                                '<%= product.getCategory().replace("'", "\\'") %>',
+                                                '<%= product.getPrice() %>',
+                                                '<%= product.getStockQuantity() %>',
+                                                '<%= product.getImagePath() != null ? product.getImagePath().replace("'", "\\'") : "" %>',
+                                                '<%= product.isActive() %>',
+                                                '<%= product.getDiscountPercentage() %>',
+                                                '<%= product.isFeatured() %>'
+                                            )" class="btn btn-success btn-small">✏️ Edit</button>
+                                            
+                                            <form action="ManageProductsServlet" method="post" style="display:inline;">
+                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="id" value="<%= product.getProductId() %>">
+                                                <button type="submit" onclick="return confirm('⚠️ Are you sure you want to delete this product? This action cannot be undone.')" 
+                                                        class="btn btn-danger btn-small">🗑️ Delete</button>
+                                            </form>
+                                            
+                                            <form action="ManageProductsServlet" method="post" style="display:inline;">
+                                                <input type="hidden" name="action" value="toggleActive">
+                                                <input type="hidden" name="id" value="<%= product.getProductId() %>">
+                                                <button type="submit" class="btn btn-small <%= product.isActive() ? "btn-primary" : "btn-success" %>">
+                                                    <%= product.isActive() ? "⏸️ Deactivate" : "▶️ Activate" %>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% } %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="empty-state">
+                                            <div class="empty-state-icon">📚</div>
+                                            <h3>No Products Found</h3>
+                                            <p>No products have been added yet.</p>
+                                            <button onclick="openAddModal()" class="btn btn-info" style="margin-top: 1rem;">
+                                                ➕ Add Your First Product
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="admin_dashboard.jsp" class="btn btn-secondary">
+                    🏠 Back to Admin Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+
     <!-- Add Product Modal -->
-    <div id="addModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>➕ Add New Product</h2>
-                <button class="close" onclick="closeAddModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form action="ManageProductsServlet" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="action" value="add">
-                    
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="addTitle">📖 Book Title *</label>
-                            <input type="text" id="addTitle" name="title" required 
-                                   placeholder="Enter the book title">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="addAuthor">✍️ Author *</label>
-                            <input type="text" id="addAuthor" name="author" required 
-                                   placeholder="Enter author name">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="addCategory">🏷️ Category *</label>
-                            <input type="text" id="addCategory" name="category" required 
-                                   placeholder="e.g., Fiction, Mystery, Romance">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="addPublisher">🏢 Publisher</label>
-                            <input type="text" id="addPublisher" name="publisher" 
-                                   placeholder="Enter publisher name">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="addPrice">💰 Price *</label>
-                            <input type="number" id="addPrice" name="price" step="0.01" min="0" required 
-                                   placeholder="0.00">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="addStockQuantity">📦 Stock Quantity *</label>
-                            <input type="number" id="addStockQuantity" name="stock_quantity" min="0" required 
-                                   placeholder="Enter stock quantity">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="addDiscountPercentage">🏷️ Discount %</label>
-                            <input type="number" id="addDiscountPercentage" name="discount_percentage" 
-                                   step="0.01" min="0" max="100" value="0" placeholder="0.00">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="addPublicationDate">📅 Publication Date</label>
-                            <input type="date" id="addPublicationDate" name="publication_date">
-                        </div>
+    <div id="addModal" class="modal-overlay">
+        <div class="modal">
+            <h2>➕ Add New Product</h2>
+            <form action="ManageProductsServlet" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="add">
+                
+                <div class="form-group">
+                    <label for="addTitle">📖 Book Title *</label>
+                    <input type="text" id="addTitle" name="title" required 
+                           placeholder="Enter the book title">
+                </div>
+                
+                <div class="form-group">
+                    <label for="addAuthor">✍️ Author *</label>
+                    <input type="text" id="addAuthor" name="author" required 
+                           placeholder="Enter author name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="addCategory">🏷️ Category *</label>
+                    <input type="text" id="addCategory" name="category" required 
+                           placeholder="e.g., Fiction, Mystery, Romance">
+                </div>
+                
+                <div class="form-group">
+                    <label for="addPublisher">🏢 Publisher</label>
+                    <input type="text" id="addPublisher" name="publisher" 
+                           placeholder="Enter publisher name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="addPrice">💰 Price *</label>
+                    <input type="number" id="addPrice" name="price" step="0.01" min="0" required 
+                           placeholder="0.00">
+                </div>
+                
+                <div class="form-group">
+                    <label for="addStockQuantity">📦 Stock Quantity *</label>
+                    <input type="number" id="addStockQuantity" name="stock_quantity" min="0" required 
+                           placeholder="Enter stock quantity">
+                </div>
+                
+                <div class="form-group">
+                    <label for="addDiscountPercentage">🏷️ Discount %</label>
+                    <input type="number" id="addDiscountPercentage" name="discount_percentage" 
+                           step="0.01" min="0" max="100" value="0" placeholder="0.00">
+                </div>
+                
+                <div class="form-group">
+                    <label for="addPublicationDate">📅 Publication Date</label>
+                    <input type="date" id="addPublicationDate" name="publication_date">
+                </div>
+                
+                <div class="form-group">
+                    <label for="addDescription">📝 Description</label>
+                    <textarea id="addDescription" name="description" 
+                              placeholder="Enter book description..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="addImage">📷 Product Image</label>
+                    <input type="file" id="addImage" name="image" accept="image/*">
+                </div>
+                
+                <div style="display: flex; gap: 2rem;">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="addIsActive" name="is_active" checked>
+                        <label for="addIsActive">✅ Active (Visible to customers)</label>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="addDescription">📝 Description</label>
-                        <textarea id="addDescription" name="description" 
-                                  placeholder="Enter book description..."></textarea>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="addFeatured" name="featured">
+                        <label for="addFeatured">⭐ Featured Product</label>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="addImage">📷 Product Image</label>
-                        <input type="file" id="addImage" name="image" accept="image/*">
-                    </div>
-                    
-                    <div style="display: flex; gap: 2rem;">
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="addIsActive" name="is_active" checked>
-                            <label for="addIsActive">✅ Active (Visible to customers)</label>
-                        </div>
-                        
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="addFeatured" name="featured">
-                            <label for="addFeatured">⭐ Featured Product</label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="button" onclick="closeAddModal()" class="btn-secondary">❌ Cancel</button>
-                        <button type="submit" class="btn-primary">✅ Add Product</button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                    <button type="button" onclick="closeAddModal()" class="btn btn-secondary">❌ Cancel</button>
+                    <button type="submit" class="btn btn-success">✅ Add Product</button>
+                </div>
+            </form>
         </div>
     </div>
     
     <!-- Edit Product Modal -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>✏️ Edit Product</h2>
-                <button class="close" onclick="closeEditModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form action="ManageProductsServlet" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="action" value="update">
-                    <input type="hidden" id="editId" name="id">
-                    
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="editTitle">📖 Book Title *</label>
-                            <input type="text" id="editTitle" name="title" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="editAuthor">✍️ Author *</label>
-                            <input type="text" id="editAuthor" name="author" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="editCategory">🏷️ Category *</label>
-                            <input type="text" id="editCategory" name="category" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="editPublisher">🏢 Publisher</label>
-                            <input type="text" id="editPublisher" name="publisher">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="editPrice">💰 Price *</label>
-                            <input type="number" id="editPrice" name="price" step="0.01" min="0" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="editStockQuantity">📦 Stock Quantity *</label>
-                            <input type="number" id="editStockQuantity" name="stock_quantity" min="0" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="editDiscountPercentage">🏷️ Discount %</label>
-                            <input type="number" id="editDiscountPercentage" name="discount_percentage" 
-                                   step="0.01" min="0" max="100">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="editPublicationDate">📅 Publication Date</label>
-                            <input type="date" id="editPublicationDate" name="publication_date">
-                        </div>
+    <div id="editModal" class="modal-overlay">
+        <div class="modal">
+            <h2>✏️ Edit Product</h2>
+            <form action="ManageProductsServlet" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="update">
+                <input type="hidden" id="editId" name="id">
+                
+                <div class="form-group">
+                    <label for="editTitle">📖 Book Title *</label>
+                    <input type="text" id="editTitle" name="title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editAuthor">✍️ Author *</label>
+                    <input type="text" id="editAuthor" name="author" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editCategory">🏷️ Category *</label>
+                    <input type="text" id="editCategory" name="category" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editPublisher">🏢 Publisher</label>
+                    <input type="text" id="editPublisher" name="publisher">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editPrice">💰 Price *</label>
+                    <input type="number" id="editPrice" name="price" step="0.01" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editStockQuantity">📦 Stock Quantity *</label>
+                    <input type="number" id="editStockQuantity" name="stock_quantity" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editDiscountPercentage">🏷️ Discount %</label>
+                    <input type="number" id="editDiscountPercentage" name="discount_percentage" 
+                           step="0.01" min="0" max="100">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editPublicationDate">📅 Publication Date</label>
+                    <input type="date" id="editPublicationDate" name="publication_date">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editDescription">📝 Description</label>
+                    <textarea id="editDescription" name="description"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>📷 Current Image</label>
+                    <div id="currentImageContainer"></div>
+                    <label for="editImage">Upload New Image</label>
+                    <input type="file" id="editImage" name="image" accept="image/*">
+                </div>
+                
+                <div style="display: flex; gap: 2rem;">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="editIsActive" name="is_active">
+                        <label for="editIsActive">✅ Active (Visible to customers)</label>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="editDescription">📝 Description</label>
-                        <textarea id="editDescription" name="description"></textarea>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="editFeatured" name="featured">
+                        <label for="editFeatured">⭐ Featured Product</label>
                     </div>
-                    
-                    <div class="form-group">
-                        <label>📷 Current Image</label>
-                        <div id="currentImageContainer"></div>
-                        <label for="editImage">Upload New Image</label>
-                        <input type="file" id="editImage" name="image" accept="image/*">
-                    </div>
-                    
-                    <div style="display: flex; gap: 2rem;">
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="editIsActive" name="is_active">
-                            <label for="editIsActive">✅ Active (Visible to customers)</label>
-                        </div>
-                        
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="editFeatured" name="featured">
-                            <label for="editFeatured">⭐ Featured Product</label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="button" onclick="closeEditModal()" class="btn-secondary">❌ Cancel</button>
-                        <button type="submit" class="btn-primary">💾 Update Product</button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                    <button type="button" onclick="closeEditModal()" class="btn btn-secondary">❌ Cancel</button>
+                    <button type="submit" class="btn btn-success">💾 Update Product</button>
+                </div>
+            </form>
         </div>
     </div>
-    
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Pahana Edu</h4>
+                    <p>
+                        Your premier destination for educational resources and learning experiences. 
+                        We're passionate about connecting learners with their next great educational adventure.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" title="Facebook">📘</a>
+                        <a href="#" title="Twitter">🐦</a>
+                        <a href="#" title="Instagram">📷</a>
+                        <a href="#" title="LinkedIn">💼</a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.jsp#home">Home</a></li>
+                        <li><a href="store">Browse Resources</a></li>
+                        <li><a href="ManageOrdersServlet?action=history">Order History</a></li>
+                        <li><a href="index.jsp#services">Services</a></li>
+                        <li><a href="index.jsp#contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="store?category=fiction">Fiction</a></li>
+                        <li><a href="store?category=non-fiction">Non-Fiction</a></li>
+                        <li><a href="store?category=science">Science & Technology</a></li>
+                        <li><a href="store?category=biography">Biography</a></li>
+                        <li><a href="store?category=children">Children's Books</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="index.jsp#contact">Help Center</a></li>
+                        <li><a href="index.jsp#services">Shipping Info</a></li>
+                        <li><a href="index.jsp#services">Returns & Refunds</a></li>
+                        <li><a href="index.jsp#contact">Privacy Policy</a></li>
+                        <li><a href="index.jsp#contact">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Pahana Edu. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" id="scrollTop">↑</button>
+
     <script>
+        // Page loader
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('pageLoader').classList.add('hidden');
+            }, 1500);
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            const scrollTop = document.getElementById('scrollTop');
+            
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+                scrollTop.classList.add('visible');
+            } else {
+                navbar.classList.remove('scrolled');
+                scrollTop.classList.remove('visible');
+            }
+        });
+
+        // Mobile menu toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            const navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+            
+            this.innerHTML = navMenu.classList.contains('active') ? '✕' : '☰';
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                const navMenu = document.getElementById('navMenu');
+                const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+                navMenu.classList.remove('active');
+                mobileMenuBtn.innerHTML = '☰';
+            });
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Scroll to top functionality
+        document.getElementById('scrollTop').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Enhanced button interactions with ripple effect
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.cssText = `
+                        position: absolute;
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                        background: rgba(255, 255, 255, 0.3);
+                        border-radius: 50%;
+                        transform: scale(0);
+                        animation: ripple 0.6s linear;
+                        pointer-events: none;
+                        z-index: 10;
+                    `;
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section-card, .empty-state').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease-out';
+            observer.observe(el);
+        });
+
         // Modal Functions
         function openAddModal() {
             document.getElementById('addModal').style.display = 'block';
@@ -971,7 +1480,7 @@
                 img.className = 'current-image';
                 imageContainer.appendChild(img);
             } else {
-                imageContainer.innerHTML = '<p style="color: #666; font-style: italic;">No current image</p>';
+                imageContainer.innerHTML = '<p style="color: rgba(255, 255, 255, 0.7); font-style: italic;">No current image</p>';
             }
 
             document.getElementById('editModal').style.display = 'block';
@@ -984,16 +1493,17 @@
         }
 
         // Close modal when clicking outside
-        window.onclick = function(event) {
-            const addModal = document.getElementById('addModal');
-            const editModal = document.getElementById('editModal');
-            if (event.target === addModal) {
+        document.getElementById('addModal').onclick = function(event) {
+            if (event.target === this) {
                 closeAddModal();
             }
-            if (event.target === editModal) {
+        };
+
+        document.getElementById('editModal').onclick = function(event) {
+            if (event.target === this) {
                 closeEditModal();
             }
-        }
+        };
 
         // Search/Filter Function
         function filterTable() {
@@ -1038,10 +1548,10 @@
                     
                     requiredFields.forEach(field => {
                         if (!field.value.trim()) {
-                            field.style.borderColor = '#dc3545';
+                            field.style.borderColor = '#ff6b6b';
                             isValid = false;
                         } else {
-                            field.style.borderColor = '#e6d7c3';
+                            field.style.borderColor = 'rgba(255, 255, 255, 0.2)';
                         }
                     });
                     
@@ -1053,28 +1563,12 @@
             });
         });
 
-        // Smooth animations
+        // Enhance table interactions
         document.addEventListener('DOMContentLoaded', function() {
-            // Add loading animation to buttons
-            const buttons = document.querySelectorAll('.btn, .add-product-btn, .btn-primary, .btn-secondary');
-            buttons.forEach(button => {
-                button.addEventListener('click', function() {
-                    if (this.type === 'submit') {
-                        this.style.opacity = '0.7';
-                        this.style.pointerEvents = 'none';
-                        setTimeout(() => {
-                            this.style.opacity = '1';
-                            this.style.pointerEvents = 'auto';
-                        }, 2000);
-                    }
-                });
-            });
-
-            // Enhance table interactions
             const tableRows = document.querySelectorAll('tbody tr');
             tableRows.forEach(row => {
                 row.addEventListener('mouseenter', function() {
-                    this.style.boxShadow = '0 4px 15px rgba(139, 69, 19, 0.1)';
+                    this.style.boxShadow = '0 4px 15px rgba(255, 215, 0, 0.1)';
                 });
                 row.addEventListener('mouseleave', function() {
                     this.style.boxShadow = 'none';
@@ -1112,8 +1606,12 @@
                 const noResultsRow = document.createElement('tr');
                 noResultsRow.id = 'noResultsMessage';
                 noResultsRow.innerHTML = `
-                    <td colspan="7" style="text-align: center; padding: 2rem; color: #666; font-style: italic;">
-                        🔍 No products found matching "${searchTerm}"
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🔍</div>
+                            <h3>No Products Found</h3>
+                            <p>No products found matching "${searchTerm}"</p>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(noResultsRow);

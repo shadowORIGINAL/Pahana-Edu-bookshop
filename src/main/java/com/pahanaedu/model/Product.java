@@ -1,3 +1,4 @@
+// Product.java
 package com.pahanaedu.model;
 
 import java.time.LocalDate;

@@ -18,8 +18,7 @@ public class OrderDAO {
         String sql = "INSERT INTO orders (customer_id, total_amount, status, bill_number, created_by) " +
                      "VALUES (?, ?, ?, ?, ?)";
         
-        try (Connection conn = DBConnection.getInstance();
-
+        try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
             ps.setLong(1, order.getCustomerId());
@@ -48,27 +47,34 @@ public class OrderDAO {
     }
 
     public void addOrderItem(OrderItem item) throws Exception {
-        validateOrderItem(item);
-        String sql = "INSERT INTO order_items (order_id, product_id, quantity, unit_price, discount_percentage) " +
-                     "VALUES (?, ?, ?, ?, ?)";
-        
-        try (Connection conn = DBConnection.getInstance();
+        // Check if item already exists
+        String checkSql = "SELECT COUNT(*) FROM order_items WHERE order_id = ? AND product_id = ?";
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement checkPs = conn.prepareStatement(checkSql)) {
 
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
-            ps.setLong(1, item.getOrderId());
-            ps.setLong(2, item.getProductId());
-            ps.setInt(3, item.getQuantity());
-            ps.setDouble(4, item.getUnitPrice());
-            ps.setDouble(5, item.getDiscountPercentage());
-            
-            ps.executeUpdate();
+            checkPs.setLong(1, item.getOrderId());
+            checkPs.setLong(2, item.getProductId());
+            try (ResultSet rs = checkPs.executeQuery()) {
+                if (rs.next() && rs.getInt(1) > 0) {
+                    throw new Exception("Order item already exists for this product");
+                }
+            }
+
+            // Now insert
+            String sql = "INSERT INTO order_items (order_id, product_id, quantity, unit_price, discount_percentage) VALUES (?, ?, ?, ?, ?)";
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setLong(1, item.getOrderId());
+                ps.setLong(2, item.getProductId());
+                ps.setInt(3, item.getQuantity());
+                ps.setDouble(4, item.getUnitPrice());
+                ps.setDouble(5, item.getDiscountPercentage());
+                ps.executeUpdate();
+            }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, String.format("Error adding order item for order ID: %d, product ID: %d", 
-                item.getOrderId(), item.getProductId()), e);
             throw new Exception("Database error while adding order item: " + e.getMessage());
         }
     }
+
 
     public void updateProductStock(Long productId, int quantity) throws Exception {
         if (productId == null || productId <= 0) {
@@ -80,8 +86,7 @@ public class OrderDAO {
 
         String sql = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE product_id = ?";
         
-        try (Connection conn = DBConnection.getInstance();
-
+        try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setInt(1, quantity);
@@ -101,8 +106,7 @@ public class OrderDAO {
     public String generateBillNumber() throws Exception {
         String sql = "SELECT COUNT(*) FROM orders WHERE bill_number LIKE ?";
         
-        try (Connection conn = DBConnection.getInstance();
-
+        try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setString(1, BILL_NUMBER_PREFIX + "%");
@@ -129,8 +133,7 @@ public class OrderDAO {
         
         List<Order> orders = new ArrayList<>();
         
-        try (Connection conn = DBConnection.getInstance();
-
+        try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             
@@ -157,8 +160,7 @@ public class OrderDAO {
                      "JOIN users cu ON o.created_by = cu.id " +
                      "WHERE o.order_id = ?";
         
-        try (Connection conn = DBConnection.getInstance();
-
+        try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setLong(1, id);
@@ -190,8 +192,7 @@ public class OrderDAO {
         
         List<OrderItem> items = new ArrayList<>();
         
-        try (Connection conn = DBConnection.getInstance();
-
+        try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setLong(1, orderId);
@@ -293,8 +294,9 @@ public class OrderDAO {
             throw new IllegalArgumentException("Unit price cannot be negative: " + item.getUnitPrice());
         }
         if (item.getDiscountPercentage() < 0 || item.getDiscountPercentage() > 100) {
-            throw new IllegalArgumentException("Discount percentage must be between 0 and 100: " + 
-                item.getDiscountPercentage());
+            throw new IllegalArgumentException(
+                "Discount percentage must be between 0 and 100: " + item.getDiscountPercentage()
+            );
         }
     }
 }

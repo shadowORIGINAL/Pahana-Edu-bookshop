@@ -758,7 +758,7 @@
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; 2025 Pahana Edu. All rights reserved. Made with ❤️ for learners.</p>
+                <p>&copy; 2025 Pahana Edu. All rights reserved.</p>
             </div>
         </div>
     </footer>

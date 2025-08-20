@@ -1,34 +1,24 @@
 package com.pahanaedu.service;
 
 import java.util.List;
-import java.util.logging.Logger;
-
 import org.mindrot.jbcrypt.BCrypt;
-
 import com.pahanaedu.dao.UserDAO;
 import com.pahanaedu.model.User;
+import java.util.logging.Logger;
 
 public class UserService {
-
-    // 1. Singleton instance
-    private static UserService instance;
-
-    // 2. Private constructor prevents external instantiation
-    private UserService() {}
-
-    // 3. Public method to provide access to the instance (thread-safe)
-    public static synchronized UserService getInstance() {
-        if (instance == null) {
-            instance = new UserService();
-        }
-        return instance;
-    }
-
-    // DAO dependency
+    private static final UserService instance = new UserService();
     private final UserDAO userDAO = new UserDAO();
     private static final Logger logger = Logger.getLogger(UserService.class.getName());
 
-    // Authentication
+    // Private constructor to prevent instantiation
+    private UserService() {}
+
+    // Global access point
+    public static UserService getInstance() {
+        return instance;
+    }
+
     public User authenticate(String email, String password) throws Exception {
         User user = userDAO.getUserByEmail(email);
         if (user == null) {
@@ -42,7 +32,6 @@ public class UserService {
         return null;
     }
 
-    // User management
     public void registerUser(User user) throws Exception {
         userDAO.saveUser(user);
     }

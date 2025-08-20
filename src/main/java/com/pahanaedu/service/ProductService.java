@@ -6,14 +6,15 @@ import com.pahanaedu.model.Product;
 import java.util.List;
 
 public class ProductService {
-
-    // 1. Single instance
     private static ProductService instance;
+    private final ProductDAO productDAO;
 
-    // 2. Private constructor prevents external instantiation
-    private ProductService() {}
+    // Private constructor
+    private ProductService() {
+        this.productDAO = new ProductDAO();
+    }
 
-    // 3. Public method to provide access to the instance (thread-safe)
+    // Singleton accessor
     public static synchronized ProductService getInstance() {
         if (instance == null) {
             instance = new ProductService();
@@ -21,10 +22,6 @@ public class ProductService {
         return instance;
     }
 
-    // DAO dependency
-    private final ProductDAO productDAO = new ProductDAO();
-
-    // Service methods
     public void addProduct(Product product) throws Exception {
         productDAO.saveProduct(product);
     }

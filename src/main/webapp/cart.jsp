@@ -10,6 +10,8 @@
     boolean outOfStockFlag = false;
     User user = (User) session.getAttribute("user");
     boolean isLoggedIn = (user != null);
+    Integer cartCount = (Integer) session.getAttribute("cartCount");
+    if (cartCount == null) cartCount = 0;
 %>
 
 <!DOCTYPE html>
@@ -26,7 +28,7 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Color Emoji', sans-serif;
             background: #0f0f0f;
             color: #ffffff;
             line-height: 1.6;
@@ -114,10 +116,35 @@
             background: rgba(255, 215, 0, 0.1);
         }
 
+        .nav-link.active {
+            color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .nav-link.active::before {
+            width: 100%;
+        }
+
         .user-menu {
             display: flex;
             align-items: center;
             gap: 1rem;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
         }
 
         .mobile-menu-btn {
@@ -416,6 +443,26 @@
             transform: translateY(-3px);
         }
 
+        .btn-info {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            color: #ffffff;
+        }
+
+        .btn-info:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 48px rgba(78, 205, 196, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: #ffffff;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 48px rgba(255, 107, 107, 0.4);
+        }
+
         .empty-cart {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
@@ -573,6 +620,12 @@
             color: #4CAF50;
         }
 
+        .alert-error {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(231, 76, 60, 0.2));
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            color: #ff6b6b;
+        }
+
         @keyframes slideInUp {
             from {
                 opacity: 0;
@@ -637,6 +690,15 @@
             .container {
                 padding: 0 1rem;
             }
+
+            .user-menu {
+                gap: 0.5rem;
+            }
+
+            .btn {
+                padding: 0.8rem 1.2rem;
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
@@ -644,7 +706,7 @@
     <!-- Page Loader -->
     <div class="page-loader" id="pageLoader">
         <div class="loader-content">
-            <div class="loader-icon">📚</div>
+            <div class="loader-icon">&#128218;</div>
             <h3>Loading Pahana Edu...</h3>
         </div>
     </div>
@@ -653,7 +715,7 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="index.jsp" class="logo">
-                📖 Pahana Edu
+                &#128214; Pahana Edu
             </a>
             
             <ul class="nav-menu" id="navMenu">
@@ -662,7 +724,7 @@
                 <li><a href="store" class="nav-link">Store</a></li>
                 <li><a href="index.jsp#services" class="nav-link">Services</a></li>
                 <li><a href="index.jsp#contact" class="nav-link">Contact</a></li>
-                <li><a href="cart.jsp" class="nav-link">🛒 Cart (<%= session.getAttribute("cartCount") != null ? session.getAttribute("cartCount") : 0 %>)</a></li>
+                <li><a href="cart.jsp" class="nav-link active">&#128722; Cart (<%= cartCount %>)</a></li>
             </ul>
 
             <div class="user-menu">
@@ -678,20 +740,20 @@
                         }
                     %>
                     <a href="<%= roleBasedLink %>" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem; text-decoration: none;">
-                        👤 <%= user.getFirstName() %>
+                        &#128100; <%= user.getFirstName() %>
                     </a>
                     <a href="LogoutServlet" class="btn btn-danger" style="padding: 0.5rem 1rem; font-size: 0.9rem; text-decoration: none;" 
                        onclick="return confirm('Are you sure you want to logout?')">
-                        🚪 Logout
+                        &#128682; Logout
                     </a>
                 <% } else { %>
                     <a href="login.jsp" class="btn btn-info" style="padding: 0.5rem 1rem; font-size: 0.9rem; text-decoration: none;">
-                        🔑 Login
+                        &#128273; Login
                     </a>
                 <% } %>
             </div>
 
-            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">&#9776;</button>
         </div>
     </nav>
 
@@ -706,9 +768,9 @@
             <% } %>
             <% if (cart.isEmpty()) { %>
                 <div class="empty-cart">
-                    <h3>📚 Your Cart is Empty</h3>
+                    <h3>&#128218; Your Cart is Empty</h3>
                     <p>Looks like you haven't added any items to your cart yet.</p>
-                    <a href="store" class="btn btn-primary">🛍️ Continue Shopping</a>
+                    <a href="store" class="btn btn-primary">&#128717; Continue Shopping</a>
                 </div>
             <% } else { %>
                 <div class="cart-container">
@@ -725,7 +787,7 @@
                             boolean exceedsStock = quantity > p.getStockQuantity();
                             if (exceedsStock) outOfStockFlag = true;
                         %>
-                            <div class="cart-item">
+                            <div class="cart-item" data-product-id="<%= p.getProductId() %>">
                                 <% if (p.getImagePath() != null && !p.getImagePath().isEmpty()) { %>
                                     <img src="<%= request.getContextPath() + "/" + p.getImagePath() %>" 
                                          alt="<%= p.getTitle() %>" class="cart-item-image">
@@ -753,7 +815,7 @@
                                     <% } else if (exceedsStock) { %>
                                         <p class="out-of-stock">Only <%= p.getStockQuantity() %> available (you have <%= quantity %>)</p>
                                     <% } else { %>
-                                        <p>Available: <%= p.getStockQuantity() %></p>
+                                        <p>Available: <span class="stock-quantity"><%= p.getStockQuantity() %></span></p>
                                     <% } %>
                                     
                                     <div class="cart-item-controls">
@@ -776,8 +838,8 @@
                     <div class="cart-summary">
                         <h3 class="summary-title">Order Summary</h3>
                         <div class="summary-row">
-                            <span>Subtotal (<%= cart.values().stream().mapToInt(Integer::intValue).sum() %> items)</span>
-                            <span>$<%= String.format("%.2f", subtotal) %></span>
+                            <span>Subtotal (<span class="total-items"><%= cart.values().stream().mapToInt(Integer::intValue).sum() %></span> items)</span>
+                            <span class="subtotal">$<%= String.format("%.2f", subtotal) %></span>
                         </div>
                         <div class="summary-row">
                             <span>Shipping</span>
@@ -785,11 +847,11 @@
                         </div>
                         <div class="summary-row">
                             <span>Tax</span>
-                            <span>$<%= String.format("%.2f", subtotal * 0.1) %></span>
+                            <span class="tax">$<%= String.format("%.2f", subtotal * 0.1) %></span>
                         </div>
                         <div class="summary-row summary-total">
                             <span>Total</span>
-                            <span>$<%= String.format("%.2f", subtotal * 1.1) %></span>
+                            <span class="total">$<%= String.format("%.2f", subtotal * 1.1) %></span>
                         </div>
                         
                         <form action="CheckoutServlet" method="post" id="checkoutForm">
@@ -814,10 +876,10 @@
                         We're passionate about connecting learners with their next great educational adventure.
                     </p>
                     <div class="social-links">
-                        <a href="#" title="Facebook">📘</a>
-                        <a href="#" title="Twitter">🐦</a>
-                        <a href="#" title="Instagram">📷</a>
-                        <a href="#" title="LinkedIn">💼</a>
+                        <a href="#" title="Facebook">&#128488;</a>
+                        <a href="#" title="Twitter">&#128038;</a>
+                        <a href="#" title="Instagram">&#128247;</a>
+                        <a href="#" title="LinkedIn">&#128188;</a>
                     </div>
                 </div>
                 
@@ -860,7 +922,7 @@
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; 2025 Pahana Edu. All rights reserved. Made with ❤️ for learners.</p>
+                <p>&copy; 2025 Pahana Edu. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -887,7 +949,7 @@
         document.getElementById('mobileMenuBtn').addEventListener('click', function() {
             const navMenu = document.getElementById('navMenu');
             navMenu.classList.toggle('active');
-            this.innerHTML = navMenu.classList.contains('active') ? '✕' : '☰';
+            this.innerHTML = navMenu.classList.contains('active') ? '&#10005;' : '&#9776;';
         });
 
         // Close mobile menu when clicking on a link
@@ -896,7 +958,7 @@
                 const navMenu = document.getElementById('navMenu');
                 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
                 navMenu.classList.remove('active');
-                mobileMenuBtn.innerHTML = '☰';
+                mobileMenuBtn.innerHTML = '&#9776;';
             });
         });
 
@@ -982,53 +1044,7 @@
         `;
         document.head.appendChild(style);
 
-        // Sparkle effects on mouse movement
-        document.addEventListener('mousemove', function(e) {
-            if (Math.random() > 0.995) {
-                createSparkle(e.clientX, e.clientY);
-            }
-        });
-
-        function createSparkle(x, y) {
-            const sparkle = document.createElement('div');
-            sparkle.innerHTML = '✨';
-            sparkle.style.cssText = `
-                position: fixed;
-                left: ${x}px;
-                top: ${y}px;
-                font-size: ${Math.random() * 10 + 10}px;
-                pointer-events: none;
-                z-index: 10;
-                animation: sparkleAnim 1s ease-out forwards;
-            `;
-            
-            document.body.appendChild(sparkle);
-            
-            setTimeout(() => {
-                sparkle.remove();
-            }, 1000);
-        }
-
-        const sparkleStyleSheet = document.createElement('style');
-        sparkleStyleSheet.textContent = `
-            @keyframes sparkleAnim {
-                0% {
-                    transform: scale(0) rotate(0deg);
-                    opacity: 1;
-                }
-                50% {
-                    transform: scale(1) rotate(180deg);
-                    opacity: 1;
-                }
-                100% {
-                    transform: scale(0) rotate(360deg);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(sparkleStyleSheet);
-
-        // Existing cart functionality
+        // Cart functionality
         function updateQuantity(productId, change) {
             const input = document.querySelector(`input[onchange="updateQuantityInput(${productId}, this)"]`);
             const newValue = parseInt(input.value) + change;
@@ -1037,6 +1053,10 @@
             if (newValue >= 1 && newValue <= max) {
                 input.value = newValue;
                 sendQuantityUpdate(productId, newValue);
+            } else if (newValue < 1) {
+                input.value = 1;
+            } else if (newValue > max) {
+                input.value = max;
             }
         }
         
@@ -1059,63 +1079,223 @@
                 method: 'POST',
                 credentials: 'include'
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
-                    document.querySelectorAll('.nav-menu .nav-link[href="cart.jsp"]')
-                        .forEach(el => {
-                            el.textContent = `🛒 Cart (${data.cartCount})`;
+                    // Update cart count in nav-menu
+                    const cartCountElements = document.querySelectorAll('.nav-menu .nav-link[href="cart.jsp"]');
+                    cartCountElements.forEach(el => {
+                        el.innerHTML = `&#128722; Cart (${data.cartCount})`;
+                    });
+
+                    // Update cart summary
+                    const totalItems = document.querySelector('.total-items');
+                    const subtotalElement = document.querySelector('.subtotal');
+                    const taxElement = document.querySelector('.tax');
+                    const totalElement = document.querySelector('.total');
+                    const checkoutButton = document.querySelector('#checkoutForm button[type="submit"]');
+                    let newSubtotal = 0;
+                    let newItemCount = 0;
+
+                    // Update cart items and calculate new subtotal and item count
+                    if (data.items && Array.isArray(data.items)) {
+                        data.items.forEach(item => {
+                            newSubtotal += item.price * item.quantity;
+                            newItemCount += item.quantity;
+
+                            // Update individual cart item
+                            const cartItem = document.querySelector(`.cart-item[data-product-id="${item.productId}"]`);
+                            if (cartItem) {
+                                const stockElement = cartItem.querySelector('.stock-quantity');
+                                const outOfStockElement = cartItem.querySelector('.out-of-stock');
+                                const minusBtn = cartItem.querySelector('.quantity-btn.minus');
+                                const plusBtn = cartItem.querySelector('.quantity-btn.plus');
+                                const quantityInput = cartItem.querySelector('.quantity-input');
+
+                                quantityInput.value = item.quantity;
+                                quantityInput.max = item.stockQuantity;
+
+                                if (item.quantity > item.stockQuantity) {
+                                    if (outOfStockElement) {
+                                        outOfStockElement.textContent = `Only ${item.stockQuantity} available (you have ${item.quantity})`;
+                                    } else {
+                                        const newOutOfStock = document.createElement('p');
+                                        newOutOfStock.className = 'out-of-stock';
+                                        newOutOfStock.textContent = `Only ${item.stockQuantity} available (you have ${item.quantity})`;
+                                        cartItem.querySelector('.cart-item-price').insertAdjacentElement('afterend', newOutOfStock);
+                                    }
+                                } else {
+                                    if (outOfStockElement) outOfStockElement.remove();
+                                    if (stockElement) stockElement.textContent = item.stockQuantity;
+                                }
+
+                                minusBtn.disabled = item.quantity <= 1;
+                                plusBtn.disabled = item.quantity >= item.stockQuantity;
+                            }
                         });
-                    window.location.reload();
+
+                        // Update Order Summary
+                        totalItems.textContent = newItemCount;
+                        subtotalElement.textContent = `$${newSubtotal.toFixed(2)}`;
+                        taxElement.textContent = `$${(newSubtotal * 0.1).toFixed(2)}`;
+                        totalElement.textContent = `$${(newSubtotal * 1.1).toFixed(2)}`;
+
+                        // Update checkout button state
+                        const hasStockIssues = data.items.some(i => i.quantity > i.stockQuantity);
+                        checkoutButton.disabled = hasStockIssues;
+                        checkoutButton.textContent = hasStockIssues ? 'Adjust quantities to checkout' : 'Proceed to Checkout';
+
+                        // Show success message
+                        const successDiv = document.createElement('div');
+                        successDiv.className = 'alert alert-success';
+                        successDiv.textContent = 'Cart updated successfully!';
+                        document.querySelector('.cart-title').insertAdjacentElement('afterend', successDiv);
+                        setTimeout(() => successDiv.remove(), 2000);
+                    } else {
+                        throw new Error('Invalid items data in response');
+                    }
                 } else {
                     const errorDiv = document.createElement('div');
                     errorDiv.className = 'alert alert-error';
-                    errorDiv.textContent = data.message || "Failed to update quantity.";
+                    errorDiv.textContent = data.message || 'Failed to update quantity.';
                     document.querySelector('.cart-title').insertAdjacentElement('afterend', errorDiv);
                     setTimeout(() => errorDiv.remove(), 3000);
                 }
             })
             .catch(err => {
-                console.error("Update quantity error", err);
+                console.error('Update quantity error:', err);
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'alert alert-error';
-                errorDiv.textContent = "Failed to update quantity. Please try again.";
+                errorDiv.textContent = 'Failed to update quantity. Please try again.';
                 document.querySelector('.cart-title').insertAdjacentElement('afterend', errorDiv);
                 setTimeout(() => errorDiv.remove(), 3000);
             });
         }
         
         function removeItem(productId) {
-            if (confirm('Are you sure you want to remove this item from your cart?')) {
-                fetch('removeFromCart?productId=' + productId, {
-                    method: 'POST',
-                    credentials: 'include'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.querySelectorAll('.nav-menu .nav-link[href="cart.jsp"]')
-                            .forEach(el => {
-                                el.textContent = `🛒 Cart (${data.cartCount})`;
-                            });
-                        window.location.reload();
+            if (!confirm('Are you sure you want to remove this item from your cart?')) return;
+
+            fetch('removeFromCart?productId=' + productId, {
+                method: 'POST',
+                credentials: 'include'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Update cart count in nav-menu
+                    const cartCountElements = document.querySelectorAll('.nav-menu .nav-link[href="cart.jsp"]');
+                    cartCountElements.forEach(el => {
+                        el.innerHTML = `&#128722; Cart (${data.cartCount})`;
+                    });
+
+                    // Remove the cart item from the DOM
+                    const cartItem = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
+                    if (cartItem) cartItem.remove();
+
+                    // Update cart summary
+                    const totalItems = document.querySelector('.total-items');
+                    const subtotalElement = document.querySelector('.subtotal');
+                    const taxElement = document.querySelector('.tax');
+                    const totalElement = document.querySelector('.total');
+                    const checkoutButton = document.querySelector('#checkoutForm button[type="submit"]');
+                    let newSubtotal = 0;
+                    let newItemCount = 0;
+
+                    // Update cart items and calculate new subtotal and item count
+                    if (data.items && Array.isArray(data.items)) {
+                        data.items.forEach(item => {
+                            newSubtotal += item.price * item.quantity;
+                            newItemCount += item.quantity;
+
+                            // Update remaining cart items
+                            const cartItem = document.querySelector(`.cart-item[data-product-id="${item.productId}"]`);
+                            if (cartItem) {
+                                const stockElement = cartItem.querySelector('.stock-quantity');
+                                const outOfStockElement = cartItem.querySelector('.out-of-stock');
+                                const minusBtn = cartItem.querySelector('.quantity-btn.minus');
+                                const plusBtn = cartItem.querySelector('.quantity-btn.plus');
+                                const quantityInput = cartItem.querySelector('.quantity-input');
+
+                                quantityInput.value = item.quantity;
+                                quantityInput.max = item.stockQuantity;
+
+                                if (item.quantity > item.stockQuantity) {
+                                    if (outOfStockElement) {
+                                        outOfStockElement.textContent = `Only ${item.stockQuantity} available (you have ${item.quantity})`;
+                                    } else {
+                                        const newOutOfStock = document.createElement('p');
+                                        newOutOfStock.className = 'out-of-stock';
+                                        newOutOfStock.textContent = `Only ${item.stockQuantity} available (you have ${item.quantity})`;
+                                        cartItem.querySelector('.cart-item-price').insertAdjacentElement('afterend', newOutOfStock);
+                                    }
+                                } else {
+                                    if (outOfStockElement) outOfStockElement.remove();
+                                    if (stockElement) stockElement.textContent = item.stockQuantity;
+                                }
+
+                                minusBtn.disabled = item.quantity <= 1;
+                                plusBtn.disabled = item.quantity >= item.stockQuantity;
+                            }
+                        });
+
+                        // Update Order Summary
+                        totalItems.textContent = newItemCount;
+                        subtotalElement.textContent = `$${newSubtotal.toFixed(2)}`;
+                        taxElement.textContent = `$${(newSubtotal * 0.1).toFixed(2)}`;
+                        totalElement.textContent = `$${(newSubtotal * 1.1).toFixed(2)}`;
+
+                        // Update checkout button state
+                        const hasStockIssues = data.items.some(i => i.quantity > i.stockQuantity);
+                        checkoutButton.disabled = hasStockIssues;
+                        checkoutButton.textContent = hasStockIssues ? 'Adjust quantities to checkout' : 'Proceed to Checkout';
+
+                        // Handle empty cart
+                        if (newItemCount === 0) {
+                            const cartContainer = document.querySelector('.cart-container');
+                            cartContainer.innerHTML = `
+                                <div class="empty-cart">
+                                    <h3>&#128218; Your Cart is Empty</h3>
+                                    <p>Looks like you haven't added any items to your cart yet.</p>
+                                    <a href="store" class="btn btn-primary">&#128717; Continue Shopping</a>
+                                </div>
+                            `;
+                        }
+
+                        // Show success message
+                        const successDiv = document.createElement('div');
+                        successDiv.className = 'alert alert-success';
+                        successDiv.textContent = 'Item removed successfully!';
+                        document.querySelector('.cart-title').insertAdjacentElement('afterend', successDiv);
+                        setTimeout(() => successDiv.remove(), 2000);
                     } else {
-                        const errorDiv = document.createElement('div');
-                        errorDiv.className = 'alert alert-error';
-                        errorDiv.textContent = data.message || "Failed to remove item.";
-                        document.querySelector('.cart-title').insertAdjacentElement('afterend', errorDiv);
-                        setTimeout(() => errorDiv.remove(), 3000);
+                        throw new Error('Invalid items data in response');
                     }
-                })
-                .catch(err => {
-                    console.error("Remove item error", err);
+                } else {
                     const errorDiv = document.createElement('div');
                     errorDiv.className = 'alert alert-error';
-                    errorDiv.textContent = "Failed to remove item. Please try again.";
+                    errorDiv.textContent = data.message || 'Failed to remove item.';
                     document.querySelector('.cart-title').insertAdjacentElement('afterend', errorDiv);
                     setTimeout(() => errorDiv.remove(), 3000);
-                });
-            }
+                }
+            })
+            .catch(err => {
+                console.error('Remove item error:', err);
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'alert alert-error';
+                errorDiv.textContent = 'Failed to remove item. Please try again.';
+                document.querySelector('.cart-title').insertAdjacentElement('afterend', errorDiv);
+                setTimeout(() => errorDiv.remove(), 3000);
+            });
         }
 
         document.getElementById('checkoutForm').addEventListener('submit', function(e) {
@@ -1155,7 +1335,7 @@
                 }
             })
             .catch(err => {
-                console.error("Checkout error", err);
+                console.error("Checkout error:", err);
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'alert alert-error';
                 errorDiv.textContent = "Error during checkout. Please try again.";
@@ -1167,4 +1347,4 @@
         });
     </script>
 </body>
-</html></html>
+</html>

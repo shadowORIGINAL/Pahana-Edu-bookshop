@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="com.pahanaedu.model.Product" %>
+
 <%@ page import="com.pahanaedu.model.User" %>
 <%@ page import="java.util.List" %>
 <%

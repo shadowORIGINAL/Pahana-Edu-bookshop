@@ -10,7 +10,7 @@ import java.util.*;
 
 public class ManageOrdersServlet extends HttpServlet {
 	private final OrderService orderService = OrderService.getInstance();
-    private final UserService userService = UserService.getInstance();
+	private final UserService userService = UserService.getInstance();
     private final ProductService productService = ProductService.getInstance();
 
     @Override

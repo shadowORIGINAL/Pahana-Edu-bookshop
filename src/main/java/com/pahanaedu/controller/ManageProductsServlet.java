@@ -21,10 +21,10 @@ import javax.servlet.http.Part;
     maxRequestSize = 1024 * 1024 * 100   // 100 MB
 )
 public class ManageProductsServlet extends HttpServlet {
-    private final ProductService productService = ProductService.getInstance();
+	private final ProductService productService = ProductService.getInstance();
     private static final String UPLOAD_DIR = "images";  // Changed from "images/products"
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         User user = session != null ? (User) session.getAttribute("user") : null;
@@ -44,7 +44,7 @@ public class ManageProductsServlet extends HttpServlet {
         }
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         User user = session != null ? (User) session.getAttribute("user") : null;
