@@ -1,0 +1,15 @@
+# Eclipse workspace files
+.metadata/
+*.classpath
+*.project
+.settings/
+
+# Build folders
+bin/
+target/
+
+# Server configs
+Servers/
+
+# Log files
+*.log
